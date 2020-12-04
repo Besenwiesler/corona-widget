@@ -543,40 +543,6 @@ function getValueFromJson(data) {
     }
 }
 
-// function parseRCSV(rDataStr) {
-//     let lines = rDataStr.split(/(?:\r\n|\n)+/).filter(function(el) { return el.length != 0 });
-//     let headers = lines.splice(0, 1)[0].split(";");
-//     let valuesRegExp = /(?:\"([^\"]*(?:\"\"[^\"]*)*)\")|([^\";]+)/g;
-//     let elements = [];
-//     for (let i = 0; i < lines.length; i++) {
-//         let element = {};
-//         let j = 0;
-
-//         while (matches = valuesRegExp.exec(lines[i])) {
-//             var value = matches[1] || matches[2];
-//             value = value.replace(/\"\"/g, "\"");
-//             element[headers[j]] = value;
-//             j++;
-//         }
-//         elements.push(element);
-//     }
-//     let lastR = {};
-//     let lastR2 = {};
-//     elements.forEach(item => {
-//         let rVal = item['Punktschätzer des 7-Tage-R Wertes'].replace(',', '.');
-//         if (parseFloat(rVal) > 0) {
-//             lastR2 = lastR;
-//             lastR = item;
-//         }
-//     })
-
-//     let lastRArr = [];
-//     lastRArr.push(lastR2);
-//     lastRArr.push(lastR);
-//     return lastRArr;
-// }
-
-
 function estimateReproductionFactor(pastIncidence, offset) {
     let l = pastIncidence.length - offset;
     let f = pastIncidence[l - 1] / pastIncidence[l - 8];
@@ -658,14 +624,6 @@ async function getData(useFixedCoordsIndex = false) {
 
         let locIncidence = 0;
         if (getGermany) {
-            // const rDataStr = await new Request(apiRUrl).loadString();
-            // const rData = parseRCSV(rDataStr);
-            // if (rData[1]['Punktschätzer des 7-Tage-R Wertes'] !== 'undefined') {
-            //     r_today = rData[1]['Punktschätzer des 7-Tage-R Wertes'];
-            // }
-            // if (rData[0]['Punktschätzer des 7-Tage-R Wertes'] !== 'undefined') {
-            //     r_yesterday = rData[0]['Punktschätzer des 7-Tage-R Wertes'];
-            // }
             locIncidence = parseFloat(areaIncidenceLastWeek[areaIncidenceLastWeek.length - 1]).toFixed(1);
         } else if (getState) {
             locIncidence = parseFloat(attr.cases7_bl_per_100k.toFixed(1));
@@ -732,11 +690,6 @@ async function getLocation(fixedCoordinateIndex = false) {
     }
 }
 
-
-function formatCases(cases) {
-    return formatedCases = prettyNumber(cases).toLocaleString('de-DE');
-}
-
 function getTrendArrow(preValue, currentValue) {
     let arrow = '';
     let pct = (parseFloat(currentValue) / parseFloat(preValue) - 1) * 100;
@@ -790,9 +743,8 @@ function getTrendColor(arrow) {
 
 function createUpdatedLabel(label, data) {
     const updateLabel = label.addText(`${data.updated.substr(0, 10)} `);
-    updateLabel.font = Font.systemFont(8);
-    updateLabel.textColor = Color.gray();
-    label.addSpacer();
+    updateLabel.font = Font.systemFont(9);
+    updateLabel.textColor = Color.black();
 }
 
 function getRTrend(today, yesterday) {
@@ -843,7 +795,6 @@ function columnGraph(data, width, height) {
     return context;
 }
 
-
 function getIncidenceColor(incidence) {
     let color = LIMIT_GREEN_COLOR;
     if (incidence >= LIMIT_DARKRED) {
@@ -858,18 +809,22 @@ function getIncidenceColor(incidence) {
     return color;
 }
 
-function prettyNumber(num) {
-	let prettyNumber = num;
+function formatCases(cases) {
+    return formatedCases = getRoundedNumber(cases).toLocaleString('de-DE');
+}
+
+function getRoundedNumber(num) {
+	let roundedNumber = num;
 
 	if (Math.abs(Number(num)) >= 1.0e+6) {
-		prettyNumber = Math.round(parseFloat(num / 1.0e+6)*10)/10 + " M";
+		roundedNumber = Math.round(parseFloat(num / 1.0e+6)*10)/10 + " M";
     }
     else if (Math.abs(Number(num)) >= 1.0e+5) {
-      	prettyNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
+      	roundedNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
     }
     else if (Math.abs(Number(num)) >= 1.0e+3) {
-      	prettyNumber = Math.round(parseFloat(num / 1.0e+3)*10)/10 + " K";
+      	roundedNumber = Math.round(parseFloat(num / 1.0e+3)*10)/10 + " K";
     }
     
-	return prettyNumber;
+	return roundedNumber;
 }
