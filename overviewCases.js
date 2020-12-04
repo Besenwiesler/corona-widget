@@ -810,7 +810,7 @@ function getIncidenceColor(incidence) {
 }
 
 function formatCases(cases) {
-    return formatedCases = getRoundedNumber(cases).toLocaleString('de-DE');
+	return formatedCases = getRoundedNumber(cases).toLocaleString('de-DE');
 }
 
 function getRoundedNumber(num) {
@@ -818,13 +818,13 @@ function getRoundedNumber(num) {
 
 	if (Math.abs(Number(num)) >= 1.0e+6) {
 		roundedNumber = Math.round(parseFloat(num / 1.0e+6)*10)/10 + " M";
-    }
-    else if (Math.abs(Number(num)) >= 1.0e+5) {
-      	roundedNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
-    }
-    else if (Math.abs(Number(num)) >= 1.0e+3) {
-      	roundedNumber = Math.round(parseFloat(num / 1.0e+3)*10)/10 + " K";
-    }
+    	}
+    	else if (Math.abs(Number(num)) >= 1.0e+5) {
+      		roundedNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
+    	}
+    	else if (Math.abs(Number(num)) >= 1.0e+3) {
+      		roundedNumber = Math.round(parseFloat(num / 1.0e+3)*10)/10 + " K";
+    	}
     
 	return roundedNumber;
 }
