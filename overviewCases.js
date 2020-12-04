@@ -158,7 +158,7 @@ if (args.widgetParameter) {
 let data = {};
 const widget = await createWidget();
 if (!config.runsInWidget) {
-    await widget.presentSmall();
+    await widget.presentMedium();
 }
 Script.setWidget(widget);
 Script.complete();
@@ -285,7 +285,7 @@ function createWaitLocationMsg(stack) {
 }
 
 function createHeader(stack, data) {
-    const header = stack.addText("🦠 ");
+    const header = stack.addText("");
     header.font = Font.mediumSystemFont(12);
     const areanameLabel = stack.addText(data.areaName);
     areanameLabel.font = Font.mediumSystemFont(14);
@@ -303,13 +303,19 @@ function createCasesBlock(stack, data) {
     // Active Cases 
     const gesCasesStack = stack.addStack();
     gesCasesStack.setPadding(2, 5, 2, 2);
-    gesCasesStack.size = new Size(130, 14);
+//     gesCasesStack.size = new Size(130, 14);
+    
+    gesCasesStack.centerAlignContent();
+    gesCasesStack.backgroundColor = bgColor;
+    gesCasesStack.cornerRadius = 6;
+    gesCasesStack.size = new Size(130, 18);
+    
 
     let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
-    const areaGesActiveLabel = gesCasesStack.addText(formatCases(activeCases) + ' aktive Fälle ');
-    areaGesActiveLabel.font = Font.mediumSystemFont(10);
+    const areaGesActiveLabel = gesCasesStack.addText('📈 ' + formatCases(activeCases));
+    areaGesActiveLabel.font = Font.mediumSystemFont(11);
     areaGesActiveLabel.lineLimit = 1;
-    areaGesActiveLabel.textColor = Color.gray();
+    areaGesActiveLabel.textColor = Color.black();
     gesCasesStack.addSpacer();
 
     stack.addSpacer(space);
@@ -322,15 +328,15 @@ function createCasesBlock(stack, data) {
     casesStack.cornerRadius = 6;
     casesStack.size = new Size(130, 18);
 
-    const casesLabelSymbol = casesStack.addText('☣︎ ');
-    casesLabelSymbol.font = Font.mediumSystemFont(16);
+    const casesLabelSymbol = casesStack.addText('🦠 ');
+    casesLabelSymbol.font = Font.mediumSystemFont(11);
     casesLabelSymbol.textColor = cColor;
     casesStack.addSpacer(1);
-    const casesLabelNew = casesStack.addText('+' + formatCases(data.areaNewCases) + ' ');
-    casesLabelNew.font = Font.mediumSystemFont(12);
+    const casesLabelNew = casesStack.addText(formatCases(data.areaNewCases) + ' ');
+    casesLabelNew.font = Font.mediumSystemFont(11);
     casesLabelNew.textColor = cColor;
     const casesLabelGesamt = casesStack.addText('(' + formatCases(data.areaCases) + ')');
-    casesLabelGesamt.font = Font.mediumSystemFont(9);
+    casesLabelGesamt.font = Font.mediumSystemFont(11);
     casesLabelGesamt.textColor = cColor;
     casesStack.addSpacer();
 
@@ -344,16 +350,15 @@ function createCasesBlock(stack, data) {
     healthyStack.cornerRadius = 6;
     healthyStack.size = new Size(130, 18);
 
-    const healthyLabelSymbol = healthyStack.addText('♡ ');
-    healthyLabelSymbol.font = Font.mediumSystemFont(12);
-    healthyLabelSymbol.size = new Size(20, 12);
+    const healthyLabelSymbol = healthyStack.addText('💚 ');
+    healthyLabelSymbol.font = Font.mediumSystemFont(11);
     healthyLabelSymbol.textColor = hColor;
     healthyStack.addSpacer(1);
-    const healthyLabelNew = healthyStack.addText('+' + formatCases(data.areaNewHealthy) + ' ');
-    healthyLabelNew.font = Font.mediumSystemFont(12);
+    const healthyLabelNew = healthyStack.addText(formatCases(data.areaNewHealthy) + ' ');
+    healthyLabelNew.font = Font.mediumSystemFont(11);
     healthyLabelNew.textColor = hColor;
     const healthyLabelGesamt = healthyStack.addText('(' + formatCases(data.areaHealthy) + ')');
-    healthyLabelGesamt.font = Font.mediumSystemFont(9);
+    healthyLabelGesamt.font = Font.mediumSystemFont(11);
     healthyLabelGesamt.textColor = hColor;
     healthyStack.addSpacer();
 
@@ -367,16 +372,15 @@ function createCasesBlock(stack, data) {
     deathsStack.cornerRadius = 6;
     deathsStack.size = new Size(130, 18);
 
-    const deathsLabelSymbol = deathsStack.addText('† ');
-    deathsLabelSymbol.font = Font.mediumSystemFont(14);
-    deathsLabelSymbol.size = new Size(20, 14);
+    const deathsLabelSymbol = deathsStack.addText('🪦 ');
+    deathsLabelSymbol.font = Font.mediumSystemFont(11);
     deathsLabelSymbol.textColor = dColor;
     deathsStack.addSpacer(1);
-    const deathsLabelNew = deathsStack.addText('+' + formatCases(data.areaNewDeaths) + ' ');
-    deathsLabelNew.font = Font.mediumSystemFont(12);
+    const deathsLabelNew = deathsStack.addText(formatCases(data.areaNewDeaths) + ' ');
+    deathsLabelNew.font = Font.mediumSystemFont(11);
     deathsLabelNew.textColor = dColor;
     const deathsLabelGesamt = deathsStack.addText('(' + formatCases(data.areaDeaths) + ')');
-    deathsLabelGesamt.font = Font.mediumSystemFont(9);
+    deathsLabelGesamt.font = Font.mediumSystemFont(11);
     deathsLabelGesamt.textColor = dColor;
     deathsStack.addSpacer();
 }
@@ -402,15 +406,14 @@ function createHospitalBlock(stack, data) {
     hospitalStack.size = new Size(130, 18);
 
     const hospitalLabelSymbol = hospitalStack.addText('🏥 ');
-    hospitalLabelSymbol.font = Font.mediumSystemFont(10);
-    hospitalLabelSymbol.size = new Size(20, 10);
+    hospitalLabelSymbol.font = Font.mediumSystemFont(11);
     hospitalLabelSymbol.textColor = dColor;
     hospitalStack.addSpacer(1);
     const hospitalLabelTxt = hospitalStack.addText(formatCases(data.covidHospital) + ' ');
-    hospitalLabelTxt.font = Font.mediumSystemFont(12);
+    hospitalLabelTxt.font = Font.mediumSystemFont(11);
     hospitalLabelTxt.textColor = dColor;
-    const hospitalLabelRel = hospitalStack.addText('(' + formatCases((data.covidHospital / activeCases * 100).toFixed(2)) + '%)');
-    hospitalLabelRel.font = Font.mediumSystemFont(9);
+    const hospitalLabelRel = hospitalStack.addText('(' + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + '%)');
+    hospitalLabelRel.font = Font.mediumSystemFont(11);
     hospitalLabelRel.textColor = dColor;
     hospitalStack.addSpacer();
 
@@ -425,15 +428,14 @@ function createHospitalBlock(stack, data) {
     ventStack.size = new Size(130, 18);
 
     const ventLabelSymbol = ventStack.addText('🫁 ');
-    ventLabelSymbol.font = Font.mediumSystemFont(10);
-    ventLabelSymbol.size = new Size(20, 10);
+    ventLabelSymbol.font = Font.mediumSystemFont(11);
     ventLabelSymbol.textColor = dColor;
     ventStack.addSpacer(1);
     const ventLabelTxt = ventStack.addText(formatCases(data.covidVentilated) + ' ');
-    ventLabelTxt.font = Font.mediumSystemFont(12);
+    ventLabelTxt.font = Font.mediumSystemFont(11);
     ventLabelTxt.textColor = dColor;
-    const ventLabelRel = ventStack.addText('(' + formatCases((data.covidVentilated / activeCases * 100).toFixed(2)) + '%)');
-    ventLabelRel.font = Font.mediumSystemFont(9);
+    const ventLabelRel = ventStack.addText('(' + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + '%)');
+    ventLabelRel.font = Font.mediumSystemFont(11);
     ventLabelRel.textColor = dColor;
     ventStack.addSpacer();
 
@@ -448,15 +450,14 @@ function createHospitalBlock(stack, data) {
     bedsStack.size = new Size(130, 18);
 
     const bedsSymbol = bedsStack.addText('🛌 ');
-    bedsSymbol.font = Font.mediumSystemFont(10);
-    bedsSymbol.size = new Size(20, 10);
+    bedsSymbol.font = Font.mediumSystemFont(11);
     bedsSymbol.textColor = dColor;
     bedsStack.addSpacer(1);
     const bedsTxt = bedsStack.addText(formatCases(data.bedsFree) + ' ');
-    bedsTxt.font = Font.mediumSystemFont(12);
+    bedsTxt.font = Font.mediumSystemFont(11);
     bedsTxt.textColor = dColor;
-    const bedsRelTxt = bedsStack.addText('(' + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(2)) + '%)');
-    bedsRelTxt.font = Font.mediumSystemFont(9);
+    const bedsRelTxt = bedsStack.addText('(' + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + '%)');
+    bedsRelTxt.font = Font.mediumSystemFont(11);
     bedsRelTxt.textColor = dColor;
     bedsStack.addSpacer();
 }
@@ -733,7 +734,7 @@ async function getLocation(fixedCoordinateIndex = false) {
 
 
 function formatCases(cases) {
-    return formatedCases = new Number(cases).toLocaleString('de-DE');
+    return formatedCases = prettyNumber(cases).toLocaleString('de-DE');
 }
 
 function getTrendArrow(preValue, currentValue) {
@@ -855,4 +856,20 @@ function getIncidenceColor(incidence) {
         color = LIMIT_YELLOW_COLOR;
     }
     return color;
+}
+
+function prettyNumber(num) {
+	let prettyNumber = num;
+
+	if (Math.abs(Number(num)) >= 1.0e+6) {
+		prettyNumber = Math.round(parseFloat(num / 1.0e+6)*10)/10 + " M";
+    }
+    else if (Math.abs(Number(num)) >= 1.0e+5) {
+      	prettyNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
+    }
+    else if (Math.abs(Number(num)) >= 1.0e+3) {
+      	prettyNumber = Math.round(parseFloat(num / 1.0e+3)*10)/10 + " K";
+    }
+    
+	return prettyNumber;
 }
