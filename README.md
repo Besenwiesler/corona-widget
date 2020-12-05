@@ -58,7 +58,7 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
     Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
 - Inzidenz-Graph-Verlauf der letzten 4 Wochen
 
-Als Widget in Größe Medium werden zusätzlich auf der rechten Seite folgende Informationen angezeigt: 
+Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen angezeigt: 
 - 🔴: Neuinfizierte am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
 - 🟢: Neugenesene am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
 - 🪦: Neue Todesfälle am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
@@ -66,3 +66,9 @@ Als Widget in Größe Medium werden zusätzlich auf der rechten Seite folgende I
 - 🏥: Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
 - 🫁: Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
 - 🛌: Anzahl freier Intensivbetten im Landkreis/Bundesland/Deutschland (relativer Anteil der Gesamtintensivbetten)
+
+Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
+- 4- bis 6-stellige Werte werden mit "K" gerundet und abgekürzt dargestellt.
+  - Beispiel: "123456" wird zu "123 K"
+- 7-stellige Werte werden mit "M" gerundet und abgekürzt dargestellt.
+  - Beispiel: "1234567" wird zu "1.23 M"
