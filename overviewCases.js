@@ -300,26 +300,6 @@ function createCasesBlock(stack, data) {
     let dColor = smoothDark ? altColorDeaths : colorDeahts;
     let space = 1;
 
-    // Active Cases 
-    const gesCasesStack = stack.addStack();
-    gesCasesStack.setPadding(2, 5, 2, 2);
-//     gesCasesStack.size = new Size(130, 14);
-    
-    gesCasesStack.centerAlignContent();
-    gesCasesStack.backgroundColor = bgColor;
-    gesCasesStack.cornerRadius = 6;
-    gesCasesStack.size = new Size(130, 18);
-    
-
-    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
-    const areaGesActiveLabel = gesCasesStack.addText('📈 ' + formatCases(activeCases));
-    areaGesActiveLabel.font = Font.mediumSystemFont(11);
-    areaGesActiveLabel.lineLimit = 1;
-    areaGesActiveLabel.textColor = Color.black();
-    gesCasesStack.addSpacer();
-
-    stack.addSpacer(space);
-
     // Cases Overview
     const casesStack = stack.addStack();
     casesStack.setPadding(2, 5, 2, 2);
@@ -328,7 +308,7 @@ function createCasesBlock(stack, data) {
     casesStack.cornerRadius = 6;
     casesStack.size = new Size(130, 18);
 
-    const casesLabelSymbol = casesStack.addText('🦠 ');
+    const casesLabelSymbol = casesStack.addText('🔴 ');
     casesLabelSymbol.font = Font.mediumSystemFont(11);
     casesLabelSymbol.textColor = cColor;
     casesStack.addSpacer(1);
@@ -350,7 +330,7 @@ function createCasesBlock(stack, data) {
     healthyStack.cornerRadius = 6;
     healthyStack.size = new Size(130, 18);
 
-    const healthyLabelSymbol = healthyStack.addText('💚 ');
+    const healthyLabelSymbol = healthyStack.addText('🟢 ');
     healthyLabelSymbol.font = Font.mediumSystemFont(11);
     healthyLabelSymbol.textColor = hColor;
     healthyStack.addSpacer(1);
@@ -383,6 +363,48 @@ function createCasesBlock(stack, data) {
     deathsLabelGesamt.font = Font.mediumSystemFont(11);
     deathsLabelGesamt.textColor = dColor;
     deathsStack.addSpacer();
+    
+    // Active Cases
+    
+    const gesCasesStack = stack.addStack();
+    gesCasesStack.setPadding(2, 5, 2, 2);
+    
+    gesCasesStack.centerAlignContent();
+    gesCasesStack.backgroundColor = bgColor;
+    gesCasesStack.cornerRadius = 6;
+    gesCasesStack.size = new Size(130, 18);
+    
+    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
+    const areaGesActiveLabel = gesCasesStack.addText('📈 ' + formatCases(activeCases));
+    areaGesActiveLabel.font = Font.mediumSystemFont(11);
+    areaGesActiveLabel.lineLimit = 1;
+    areaGesActiveLabel.textColor = Color.black();
+    
+    let newActiveCases = data.areaNewCases - data.areaNewHealthy - data.areaNewDeaths;
+    if (newActiveCases > 0) {
+        const newActiveCasesLabel = gesCasesStack.addText(' (+ ' + formatCases(newActiveCases) + ')');
+        newActiveCasesLabel.font = Font.mediumSystemFont(11);
+        newActiveCasesLabel.lineLimit = 1;
+        newActiveCasesLabel.textColor = cColor;
+    }
+    else if (newActiveCases < 0) {
+        const newActiveCasesLabel = gesCasesStack.addText(' (- ' + formatCases(Math.abs(newActiveCases)) + ')');
+        newActiveCasesLabel.font = Font.mediumSystemFont(11);
+        newActiveCasesLabel.lineLimit = 1;
+        newActiveCasesLabel.textColor = hColor;
+    }
+    else if (newActiveCases == 0) {
+        const newActiveCasesLabel = gesCasesStack.addText(' (± 0)');
+        newActiveCasesLabel.font = Font.mediumSystemFont(11);
+        newActiveCasesLabel.lineLimit = 1;
+        newActiveCasesLabel.textColor = Color.black;
+    }
+   
+    gesCasesStack.addSpacer();
+    
+    // clean up
+
+    stack.addSpacer(space);
 }
 
 function createHospitalBlock(stack, data) {
@@ -817,7 +839,7 @@ function getRoundedNumber(num) {
 	let roundedNumber = num;
 
 	if (Math.abs(Number(num)) >= 1.0e+6) {
-		roundedNumber = Math.round(parseFloat(num / 1.0e+6)*10)/10 + " M";
+		roundedNumber = Math.round(parseFloat(num / 1.0e+6)*100)/100 + " M";
     	}
     	else if (Math.abs(Number(num)) >= 1.0e+5) {
       		roundedNumber = Math.round(parseFloat(num / 1.0e+3)) + " K";
