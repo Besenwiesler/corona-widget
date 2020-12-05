@@ -1,6 +1,6 @@
 # Fork
 
-Fork von [incident-Widget von tzschies](https://github.com/tzschies/incidence) mit rein kosmetischen Änderungen für das Medium-Size-Widget.
+Fork von [incident-Widget von tzschies](https://github.com/tzschies/incidence) mit rein kosmetischen Änderungen für das Medium-Size-Widget (gerundete Werte in Statistik).
 
 # overviewCases
 
