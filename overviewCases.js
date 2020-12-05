@@ -2,23 +2,15 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-brown; icon-glyph: magic;
 // LICENCE: Robert Koch-Institut (RKI), dl-de/by-2-0
-// Basic Idea and Code Snippets 
-//      FROM AUTHOR: kevinkub https://gist.github.com/kevinkub/46caebfebc7e26be63403a7f0587f664
-//      AND FROM AUTHOR: rphl https://gist.github.com/rphl/0491c5f9cb345bf831248732374c4ef5
-// Author: tzschies https://gist.github.com/tzschies/be551cc6939e7c1469c2e8407edab517
+// Fork of https://github.com/tzschies/incidence with minor adjustments only
+// https://github.com/Besenwiesler/incidence
 
 /**
- * Set Widgetparameter: AREA,LAT,LONG,NAME
+ * For configuration via widget parameters see:
  *
- * Examples:
- *
- * Show fix district (Landkreis): 0,51.1244,6.7353
- * Show fix state (Bundesland): 1,51.1244,6.7353 (inser some coordinates of a city of the state)
- * Show Germany: 2
- * Show local district (Landkreis): 0 (OR EMPTY)
- * Show local state (Bundesland): 1
- * 
+ * https://github.com/Besenwiesler/incidence/blob/main/README.md
  */
+
 /*********************************************
  * CONFIGURATION PARAMETERS
  ********************************************/
@@ -158,7 +150,7 @@ if (args.widgetParameter) {
 let data = {};
 const widget = await createWidget();
 if (!config.runsInWidget) {
-    await widget.presentMedium();
+    await widget.presentSmall();
 }
 Script.setWidget(widget);
 Script.complete();
@@ -195,19 +187,8 @@ async function createWidget() {
             main.layoutVertically();
             main.useDefaultPadding();
             main.centerAlignContent();
-
-            const header = main.addStack()
-            header.useDefaultPadding();
-            header.centerAlignContent();
-            header.layoutHorizontally();
-            header.size = new Size(120, 34);
-            createHeader(header, data);
-            header.addSpacer()
-
-            createCasesBlock(main, data);
-            main.addSpacer(10);
-            createUpdatedLabel(main, data);
-
+            
+            createLeftSide(main, data);
         }
     } else {
         list.addSpacer();
@@ -285,8 +266,6 @@ function createWaitLocationMsg(stack) {
 }
 
 function createHeader(stack, data) {
-    const header = stack.addText("");
-    header.font = Font.mediumSystemFont(12);
     const areanameLabel = stack.addText(data.areaName);
     areanameLabel.font = Font.mediumSystemFont(14);
     areanameLabel.lineLimit = 2;
@@ -486,7 +465,7 @@ function createHospitalBlock(stack, data) {
 
 function createIncidenceBlock(stack, data) {
     let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
-    let incidence = areaIncidence >= 100 ? Math.round(areaIncidence) : parseFloat(areaIncidence).toFixed(1);
+    let incidence = Math.round(areaIncidence);
     const incidenceLabel = stack.addText(incidence.toLocaleString());
     incidenceLabel.font = Font.boldSystemFont(25);
     incidenceLabel.textColor = getIncidenceColor(incidence);
