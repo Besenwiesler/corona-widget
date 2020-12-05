@@ -1,38 +1,56 @@
 # Fork
 
-Fork von [incident-Widget von tzschies](https://github.com/tzschies/incidence) mit rein kosmetischen Änderungen für das Medium-Size-Widget (gerundete Werte in Statistik).
+Fork von [incident-Widget von tzschies](https://github.com/tzschies/incidence) mit geringfügigen Anpassungen und kosmetischen Änderungen.
 
-# overviewCases
+# Screenshots
 
-COVID-19 Fallzahlen-Widget für iOS innerhalb Deutschlands
+Widget in Größe Medium:
+
+<img src=screenshotMedium.jpg>
+
+Widget in Größe Small:
+
+<img src=screenshotSmall.jpg>
+
+# Beschreibung
+
+COVID-19-Fallzahlen-Widget für iOS innerhalb Deutschlands 🇩🇪.
+
+Skript zeigt Informationen wie die Anzahl der Neuinfizierten, Geheilten und Todesfälle (sowie R-Faktor) an.
+Es kann per Parameter eingestellt werden, ob die Zahlen für Landkreis, Bundesland oder Deutschland angezeigt werden sollen. Außerdem kann ein eigener Name für Landkreis oder Bundesland über Parameter konfiguriert werden.
+
+# Installation
+
 Source
+- Quellcode <b>corona.js</b> in Scriptable als neues Script hinzufügen.
+- Widget hinzufügen und über Parameter konfigurieren (siehe Abschnitt unten).
 
-Source Code: <b>overviewCases.js</b>
+# Konfiguration über Parameter
 
-<img src=overviewCasesMedium.jpg>
+Parameter werden über eine kommaseparierte Liste übergeben wie folgt:
 
-Skript zeigt die Neuinfizierten, Geheilten und Todesfälle (sowie R-Faktor für Gesamtdeutschland) an.
-Es kann per Parameter eingestellt werden, ob die Zahlen für Landkreis, Bundesland oder Gesamtdeutschland angezeigt werden sollen. Außerdem kann ein eigener Landkreis/Bundesland-Name über Parameter vergeben werden.
-
-Parameterübergabe Beispiel:
-Gebiet, LAT, LON, Name
+Gebiet, [LAT, LON, Name]
 
 Erklärung:
-Gebiet = 0: Landkreis
-Gebiet = 1: Bundesland
-Gebiet = 2: Deutschland
-LAT,LON = Koordinaten
-Name = Eigene Bezeichnung des Landkreises/Bundeslands (optional)
+
+- Gebiet
+  - 0: Landkreis
+  - 1: Bundesland
+  - 2: Deutschland
+- LAT: Breitengrad (optionaler Parameter)
+- LON: Längengrad (optionaler Parameter)
+- Name: Eigene Bezeichnung des Landkreises/Bundeslands (optionaler Parameter)
 
 Beispiele:
+- lokaler Landkreis (Ortung via GPS): ""
+- lokales Bundesland (Ortung via GPS): "1"
+- fest eingestelltes Bundesland Bayern: "1,48.96,12.38"
+- fest eingestellter Landkreis Regensburg mit eigenem Namen: "1,48.96,12.38,LK Regensburg"
+- Deutschland: "2"
 
-lokaler Landkreis: ""
-lokales Bundesland: "1"
-Fremdes Bundesland Bayern: "1,48.96,12.38"
-Fremder Landkreis Regensburg mit eigenem Namen: "1,48.96,12.38,LK Regensburg"
-Deutschland: "2"
+# Angezeigte Informationen
 
-Als Widget Medium-Size werden zusätzliche Informationen angezeigt. Auf der linken Seite: 
+Als Widget in Größe Small werden folgende Informationen angezeigt: 
 -  Inzidenz mit Trend Pfeil 
     Der Trendpfeil bestimmt sich durch den geschätzten (!) R-Faktor. Dieser wird direkt darunter angezeigt. Ist der R-Faktor zwischen 0,95 und 1,05 bleibt die Inzidenz in etwa konstant (→), ist der R-Faktor zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗), über 1,1 steigt sie stark (↑). Ist der R-Fakor zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘), unter 0,9 sinkt sie stark (↓). 
 - Geschätzter R-Faktor. 
@@ -40,33 +58,11 @@ Als Widget Medium-Size werden zusätzliche Informationen angezeigt. Auf der link
     Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
 - Inzidenz-Graph-Verlauf der letzten 4 Wochen
 
-Auf der rechten Seite: 
-- Aktive Fälle im Landkreis/Bundesland/Deutschland
-- Neuinfizierte am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
-- Neugenesene am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
-- Neue Todesfälle am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
-- Anzahl der COVID-19 Patienten, die im Krankenhaus behandelt werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
-- Anzahl der COVID-19 Patienten, die im Krankenhaus beatmet werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
-- Anzahl freier Intensivbetten im Landkreis/Bundesland/Deutschland (relativer Anteil der Gesamtintensivbetten)
-
-# incidence
-
-COVID-19 Inzidenz-Widget für iOS innerhalb Deutschlands 🇩🇪 (Kreis/Stadt + Bundesland + Deutschland + Trend)
-
-Source Code: <b>incidence.js</b>
-
-<img src=incidence.jpg>
-
-Skript muss in der App Scriptable importiert werden und kann dann als Widget genutzt werden. 
-
-Das Widget kann parametriert werden. Durch Übergabe des ersten Parameters kann umgeschaltet werden zwischen Kurvenanzeige und Statistik-Anzeige:
-
-Format der Parameterübergabe
-ShowGraph[,LATITUDE,LONGITUDE]
-
-Beispiele Parameterübergabe:
-
-Grafik-Anzeige aktuelle Position: 1
-Grafik-Anzeige fixer Koordinaten: 1,51.1244,6.7353
-Statistik-Anzeige aktuelle Position: 0
-Statistik-Anzeige fixer Koordinaten: 0,51.1244,6.7353
+Als Widget in Größe Medium werden zusätzlich auf der rechten Seite folgende Informationen angezeigt: 
+- 🔴: Neuinfizierte am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
+- 🟢: Neugenesene am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
+- 🪦: Neue Todesfälle am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
+- 📈: Aktive Fälle im Landkreis/Bundesland/Deutschland im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle (in Klammern die Differenz des heutigen Tages)
+- 🏥: Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
+- 🫁: Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden im Landkreis/Bundesland/Deutschland (in Klammern der relative Anteil zu den aktuell Infizierten)
+- 🛌: Anzahl freier Intensivbetten im Landkreis/Bundesland/Deutschland (relativer Anteil der Gesamtintensivbetten)
