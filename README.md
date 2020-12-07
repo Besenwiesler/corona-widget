@@ -49,7 +49,7 @@ Beispiele:
 # Angezeigte Informationen
 
 Als Widget in Größe Small werden folgende Informationen angezeigt: 
-- Inzidenz mit Trendpfeil
+- Inzidenz mit Trendpfeil.
   - Der Trendpfeil bestimmt sich durch den geschätzten R-Faktor. Der R-Faktor soll die Zahl derer angeben, die von einem Infizierten angesteckt werden. D.h. ein R-Faktor von 2 bedeutet, dass ein Infizierter im Durchschnitt 2 weitere Menschen ansteckt. Der R-Faktor wird unter der Annahme geschätzt, dass zwischen Ansteckung und dem Risiko, selbst andere anzustecken, im Durchschnitt 3,5 Tage vergehen. Außerdem werden die durchschnittlichen Neuinfizierte über 7 Tage gemittelt (um statistische Effekte am Wochenende zu eliminieren). Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
   - Beispiel zur Berechnung: Vor 7 Tagen gab es im 7-Tage Schnitt 4 Neuinfektionen. Heute gibt es im 7-Tage-Schnitt 16 Neuinfektionen. Unter der Annahme der 3,5 Tage und einem R-Faktor von 2 haben die 4 Neuinfektionen nach 3,5 Tagen also 8 Personen angesteckt, welche nach weiteren 3,5 Tagen 16 Personen angesteckt haben. Der R-Faktor berechnet sich dann wie folgt:
     - R = Wurzel(Neuinfektionen_heute/Neuinfektionen_vor_7_Tagen) = Wurzel(16/4) = 2
@@ -58,8 +58,14 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
     - ist er zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎),
     - über 1,1 steigt sie stark (↑),
     - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎),
-    - unter 0,9 sinkt sie stark (↓). 
+    - unter 0,9 sinkt sie stark (↓).
+- Geschätzter R-Faktor mit Trendpfeil.
+  - Der geschätzte R-Faktor wird angezeigt, nach der Berechnung wie oben beschrieben. Für diesen gibt es ebenfalls einen Trendpfeil. Dieser vergleicht den geschätzten R-Faktor von heute mit dem Wert von gestern:
+    - →: Die Werte von heute und gestern sind gleich.
+    - ↗︎: Der Wert von heute ist größer als der Wert von gestern.
+    - ↘︎: Der Wert von heute ist niedriger als der Wert von gestern.
 - Graphischer Verlauf der Inzidenz in den letzten vier Wochen.
+- Datum der letzten Aktualisierung der Daten beim RKI.
 
 Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen angezeigt: 
 - 🔴: Neuinfizierte am heutigen Tag im Landkreis/Bundesland/Deutschland (in Klammern die Gesamtzahl der jeweiligen Region)
