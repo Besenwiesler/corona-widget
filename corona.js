@@ -91,7 +91,8 @@ const apiRUrl = `https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Pr
  * 
  * Global Variables
  * 
- ***************************************************************************/
+***************************************************************************/
+
 const GET_DAYS = 35; // 5 Wochen
 const WEEK_IN_DAYS = 7;
 const EWZ_GER = 83020000;
@@ -129,7 +130,7 @@ let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
  * 
  * Lets's Start ...
  * 
- ***************************************************************************/
+***************************************************************************/
 
 if (args.widgetParameter) {
     const parameters = args.widgetParameter.split(',');
@@ -158,7 +159,7 @@ Script.complete();
 async function createWidget() {
     const data = await getData(0);
     const list = new ListWidget();
-    list.setPadding(10, 10, 10, 10);
+    list.setPadding(10, 5, 10, 5);
     const stack = list.addStack();
     stack.layoutHorizontally();
 
@@ -176,7 +177,7 @@ async function createWidget() {
             left.layoutVertically();
 
             createLeftSide(left, data);
-            stack.addSpacer(10);
+            stack.addSpacer(20);
             const right = stack.addStack();
             right.size = new Size(130, 130);
             right.layoutVertically();
@@ -199,20 +200,19 @@ async function createWidget() {
     return list;
 }
 
-
 function createLeftSide(list, data) {
-    const headerWidth = 120;
+    const headerWidth = 130;
 
     const headerLabel = list.addStack();
     headerLabel.useDefaultPadding();
     headerLabel.centerAlignContent();
     headerLabel.layoutHorizontally();
-    headerLabel.size = new Size(headerWidth, 34);
+    headerLabel.size = new Size(headerWidth, 20);
 
     createHeader(headerLabel, data);
 
-    list.addSpacer(1);
-
+    list.addSpacer(5);
+    
     const middle = list.addStack();
     middle.layoutHorizontally();
     middle.centerAlignContent();
@@ -234,7 +234,7 @@ function createLeftSide(list, data) {
     rfactorStack.size = new Size(headerWidth / 2, 12);
     createRFactorBlock(rfactorStack, data, 10);
 
-    list.addSpacer(5);
+    list.addSpacer(15);
     createGraph(list, data);
 
     list.addSpacer(2);
@@ -262,13 +262,12 @@ function createWaitLocationMsg(stack) {
     const loadingIndicator = stack.addText("Ort wird ermittelt...".toUpperCase());
     loadingIndicator.font = Font.mediumSystemFont(13);
     loadingIndicator.textOpacity = 0.5;
-
 }
 
 function createHeader(stack, data) {
     const areanameLabel = stack.addText(data.areaName);
-    areanameLabel.font = Font.mediumSystemFont(14);
-    areanameLabel.lineLimit = 2;
+    areanameLabel.font = Font.boldSystemFont(15);
+    areanameLabel.lineLimit = 1;
 }
 
 function createCasesBlock(stack, data) {
@@ -343,6 +342,8 @@ function createCasesBlock(stack, data) {
     deathsLabelGesamt.textColor = dColor;
     deathsStack.addSpacer();
     
+    stack.addSpacer(space);
+    
     // Active Cases
     
     const gesCasesStack = stack.addStack();
@@ -380,10 +381,6 @@ function createCasesBlock(stack, data) {
     }
    
     gesCasesStack.addSpacer();
-    
-    // clean up
-
-    stack.addSpacer(space);
 }
 
 function createHospitalBlock(stack, data) {
@@ -494,6 +491,11 @@ function createRFactorBlock(stack, data, fontsize) {
     const rLabel = stack.addText('R: ' + data.r_factor_today + ' ' + getRTrend(data.r_factor_today, data.r_factor_yesterday));
     rLabel.font = Font.mediumSystemFont(fontsize);
     rLabel.textColor = dColor;
+}
+
+function createUpdatedLabel(label, data) {
+    const updateLabel = label.addText(`${data.updated.substr(0, 10)} `);
+    updateLabel.font = Font.systemFont(9);
 }
 
 function getFormatedDateBeforeDays(offset) {
@@ -740,12 +742,6 @@ function getTrendColor(arrow) {
         color = LIMIT_GREEN_COLOR;
     }
     return (color);
-}
-
-function createUpdatedLabel(label, data) {
-    const updateLabel = label.addText(`${data.updated.substr(0, 10)} `);
-    updateLabel.font = Font.systemFont(9);
-    updateLabel.textColor = Color.black();
 }
 
 function getRTrend(today, yesterday) {
