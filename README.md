@@ -9,13 +9,13 @@ Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/inc
 
 # Screenshots
 
-Widget in Größe Medium:
-
-<img src=screenshotMedium.jpg>
-
 Widget in Größe Small:
 
-<img src=screenshotSmall.jpg>
+<img width="25%" height="25%" src=screenshotSmall.jpg/>
+
+Widget in Größe Medium (mit mehr Informationen auf der rechten Seite):
+
+<img width="50%" height="50%" src=screenshotMedium.jpg/>
 
 # Installation
 
