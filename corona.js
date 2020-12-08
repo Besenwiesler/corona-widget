@@ -14,6 +14,7 @@
 /*********************************************
  * CONFIGURATION PARAMETERS
  ********************************************/
+
 // set to 'MeldeDatum' for the day when number of cases were reported
 // set to 'RefDatum' for the day of start of illness
 const datumType = 'MeldeDatum';
@@ -35,41 +36,31 @@ const showIncidenceYesterday = false;
  * 
  * Defining Colors
  * 
- ***************************************************************************/
-// set to false for white background in dark mode
-// set to true for gray background in dark mode
-const ENABLE_SMOOTH_DARK_MODE = false;
+***************************************************************************/
 
-const backgroundColor = new Color('f0f0f0');
-const colorCases = new Color('fe0000 ');
-const colorHealthy = new Color('008800');
-const colorDeahts = new Color('202020');
+const COLOR_BG = new Color('f0f0f0');
+const COLOR_FG = Color.black();
+const COLOR_INFECTED = new Color('fe0000');
+const COLOR_HEALTHY = new Color('008800');
 
-/* alternative colors if smooth dark mode is enabled */
-const altBackgroundColor = new Color('252525');
-const altColorCases = new Color('fe0000');
-const altColorHealthy = new Color('00aa00');
-const altColorDeaths = new Color('f0f0f0');
-
+const LIMIT_DARKDARKRED = 250;
 const LIMIT_DARKRED = 100;
 const LIMIT_RED = 50;
 const LIMIT_ORANGE = 35;
 const LIMIT_YELLOW = 25;
-const LIMIT_DARKRED_COLOR = new Color('9e000a');
-const LIMIT_RED_COLOR = new Color('f6000f');
-const LIMIT_ORANGE_COLOR = new Color('#ff7927');
-const LIMIT_YELLOW_COLOR = new Color('F5D800');
-const LIMIT_GREEN_COLOR = new Color('1CC747');
-
-const MAX_CHARACHTERS_BIG_HEADER = 14;
-const fontSizeBigHeader = 14;
-const fontSizeSmallHeader = 12;
+const LIMIT_DARKDARKRED_COLOR = new Color('941100');
+const LIMIT_DARKRED_COLOR = new Color('c01a00');
+const LIMIT_RED_COLOR = new Color('f92206');
+const LIMIT_ORANGE_COLOR = new Color('faa31b');
+const LIMIT_YELLOW_COLOR = new Color('f7dd31');
+const LIMIT_GREEN_COLOR = new Color('00cc00');
 
 /***************************************************************************
  * 
  * API URLs
  * 
- ***************************************************************************/
+***************************************************************************/
+
 const outputFields = 'GEN,RS,EWZ,EWZ_BL,BL_ID,cases,cases_per_100k,cases7_per_100k,cases7_bl_per_100k,last_update,BL';
 const apiUrl = (location) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/query?where=1%3D1&outFields=${outputFields}&geometry=${location.longitude.toFixed(3)}%2C${location.latitude.toFixed(3)}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&returnGeometry=false&outSR=4326&f=json`;
 const outputFieldsStates = 'Fallzahl,LAN_ew_GEN,cases7_bl_per_100k';
@@ -86,7 +77,6 @@ const apiUrlCases = (Filter, GetLandkreis) => `https://services7.arcgis.com/mOBP
 const apiUrlDivi = (GetLocation) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/DIVI_Intensivregister_Landkreise/FeatureServer/0//query?where=${GetLocation}&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=%5B%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22faelle_covid_aktuell%22%2C%22outStatisticFieldName%22%3A%22faelle_covid_aktuell%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22faelle_covid_aktuell_beatmet%22%2C%22outStatisticFieldName%22%3A%22faelle_covid_aktuell_beatmet%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22betten_frei%22%2C%22outStatisticFieldName%22%3A%22betten_frei%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22betten_gesamt%22%2C%22outStatisticFieldName%22%3A%22betten_gesamt%22%7D%5D&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=`;
 const apiRUrl = `https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting_Zahlen_csv.csv?__blob=publicationFile`;
 
-
 /***************************************************************************
  * 
  * Global Variables
@@ -97,6 +87,8 @@ const GET_DAYS = 35; // 5 Wochen
 const WEEK_IN_DAYS = 7;
 const EWZ_GER = 83020000;
 const INCIDENCE_DAYS = 28; // 4 Wochen
+
+const DELIMITER = ' ⚫︎ ';
 
 const BUNDESLAENDER_SHORT = {
     'Baden-Württemberg': 'BW',
@@ -126,9 +118,10 @@ let fixedCoordinates = [];
 let individualName = '';
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
+
 /***************************************************************************
  * 
- * Lets's Start ...
+ * Initialization
  * 
 ***************************************************************************/
 
@@ -148,13 +141,35 @@ if (args.widgetParameter) {
     }
 } else {}
 
+if (!config.runsInWidget) {
+  MEDIUMWIDGET = true;
+}
+
 let data = {};
 const widget = await createWidget();
 if (!config.runsInWidget) {
-    await widget.presentSmall();
+  await widget.presentMedium();
 }
 Script.setWidget(widget);
 Script.complete();
+
+/***************************************************************************
+ * 
+ * Functions to display widget content
+ * 
+***************************************************************************/
+
+function createWaitMsg(stack) {
+    const errorLabel = stack.addText("Daten nicht verfügbar. \nReload erfolgt... \nBitte warten.");
+    errorLabel.font = Font.mediumSystemFont(12);
+    errorLabel.textColor = Color.gray();
+}
+
+function createWaitLocationMsg(stack) {
+    const loadingIndicator = stack.addText("Ort wird ermittelt...".toUpperCase());
+    loadingIndicator.font = Font.mediumSystemFont(13);
+    loadingIndicator.textOpacity = 0.5;
+}
 
 async function createWidget() {
     const data = await getData(0);
@@ -223,6 +238,7 @@ function createLeftSide(list, data) {
     createIncTrendBlock(trendStack, data);
 
     // R-Faktor
+    
     list.addSpacer(2);
     const bottom = list.addStack();
     bottom.layoutHorizontally();
@@ -252,18 +268,6 @@ function createRightSide(list, data) {
     createHospitalBlock(right, data);
 }
 
-function createWaitMsg(stack) {
-    const errorLabel = stack.addText("Daten nicht verfügbar. \nReload erfolgt... \nBitte warten.");
-    errorLabel.font = Font.mediumSystemFont(12);
-    errorLabel.textColor = Color.gray();
-}
-
-function createWaitLocationMsg(stack) {
-    const loadingIndicator = stack.addText("Ort wird ermittelt...".toUpperCase());
-    loadingIndicator.font = Font.mediumSystemFont(13);
-    loadingIndicator.textOpacity = 0.5;
-}
-
 function createHeader(stack, data) {
     const areanameLabel = stack.addText(data.areaName);
     areanameLabel.font = Font.boldSystemFont(15);
@@ -271,78 +275,83 @@ function createHeader(stack, data) {
 }
 
 function createCasesBlock(stack, data) {
-    let smoothDark = (Device.isUsingDarkAppearance() && ENABLE_SMOOTH_DARK_MODE);
-    let bgColor = smoothDark ? altBackgroundColor : backgroundColor;
-    let cColor = smoothDark ? altColorCases : colorCases;
-    let hColor = smoothDark ? altColorHealthy : colorHealthy;
-    let dColor = smoothDark ? altColorDeaths : colorDeahts;
-    let space = 1;
-
-    // Cases Overview
+  
+    // Infected / Cases
+    
     const casesStack = stack.addStack();
     casesStack.setPadding(2, 5, 2, 2);
     casesStack.centerAlignContent();
-    casesStack.backgroundColor = bgColor;
+    casesStack.backgroundColor = COLOR_BG;
     casesStack.cornerRadius = 6;
     casesStack.size = new Size(130, 18);
 
     const casesLabelSymbol = casesStack.addText('🔴 ');
     casesLabelSymbol.font = Font.mediumSystemFont(11);
-    casesLabelSymbol.textColor = cColor;
     casesStack.addSpacer(1);
-    const casesLabelNew = casesStack.addText(formatCases(data.areaNewCases) + ' ');
-    casesLabelNew.font = Font.mediumSystemFont(11);
-    casesLabelNew.textColor = cColor;
-    const casesLabelGesamt = casesStack.addText('(' + formatCases(data.areaCases) + ')');
-    casesLabelGesamt.font = Font.mediumSystemFont(11);
-    casesLabelGesamt.textColor = cColor;
+    
+    const casesNewLabel = casesStack.addText(formatCases(data.areaNewCases));
+    casesNewLabel.font = Font.mediumSystemFont(11);
+    casesNewLabel.textColor = COLOR_INFECTED;
+    
+    const casesDelimiterLabel = casesStack.addText(DELIMITER);
+    casesDelimiterLabel.font = Font.mediumSystemFont(11);
+    casesDelimiterLabel.textColor = COLOR_FG;
+    
+    const casesSumLabel = casesStack.addText(formatCases(data.areaCases));
+    casesSumLabel.font = Font.mediumSystemFont(11);
+    casesSumLabel.textColor = COLOR_INFECTED;
+    
     casesStack.addSpacer();
 
-    stack.addSpacer(space);
+    stack.addSpacer(1);
 
-    // Healthy Overview
+    // Healthy
+    
     const healthyStack = stack.addStack();
     healthyStack.setPadding(2, 5, 2, 2);
     healthyStack.centerAlignContent();
-    healthyStack.backgroundColor = bgColor;
+    healthyStack.backgroundColor = COLOR_BG;
     healthyStack.cornerRadius = 6;
     healthyStack.size = new Size(130, 18);
 
     const healthyLabelSymbol = healthyStack.addText('🟢 ');
     healthyLabelSymbol.font = Font.mediumSystemFont(11);
-    healthyLabelSymbol.textColor = hColor;
     healthyStack.addSpacer(1);
-    const healthyLabelNew = healthyStack.addText(formatCases(data.areaNewHealthy) + ' ');
-    healthyLabelNew.font = Font.mediumSystemFont(11);
-    healthyLabelNew.textColor = hColor;
-    const healthyLabelGesamt = healthyStack.addText('(' + formatCases(data.areaHealthy) + ')');
-    healthyLabelGesamt.font = Font.mediumSystemFont(11);
-    healthyLabelGesamt.textColor = hColor;
+    
+    const healthyNewLabel = healthyStack.addText(formatCases(data.areaNewHealthy));
+    healthyNewLabel.font = Font.mediumSystemFont(11);
+    healthyNewLabel.textColor = COLOR_HEALTHY;
+    
+    const healthyDelimiterLabel = healthyStack.addText(DELIMITER);
+    healthyDelimiterLabel.font = Font.mediumSystemFont(11);
+    healthyDelimiterLabel.textColor = COLOR_FG;
+    
+    const healthySumLabel = healthyStack.addText(formatCases(data.areaHealthy));
+    healthySumLabel.font = Font.mediumSystemFont(11);
+    healthySumLabel.textColor = COLOR_HEALTHY;
+    
     healthyStack.addSpacer();
 
-    stack.addSpacer(space);
+    stack.addSpacer(1);
 
-    // Deaths Overview
+    // Deaths
+    
     const deathsStack = stack.addStack();
     deathsStack.setPadding(2, 5, 2, 2);
     deathsStack.centerAlignContent();
-    deathsStack.backgroundColor = bgColor;
+    deathsStack.backgroundColor = COLOR_BG;
     deathsStack.cornerRadius = 6;
     deathsStack.size = new Size(130, 18);
 
     const deathsLabelSymbol = deathsStack.addText('🪦 ');
     deathsLabelSymbol.font = Font.mediumSystemFont(11);
-    deathsLabelSymbol.textColor = dColor;
     deathsStack.addSpacer(1);
-    const deathsLabelNew = deathsStack.addText(formatCases(data.areaNewDeaths) + ' ');
-    deathsLabelNew.font = Font.mediumSystemFont(11);
-    deathsLabelNew.textColor = dColor;
-    const deathsLabelGesamt = deathsStack.addText('(' + formatCases(data.areaDeaths) + ')');
-    deathsLabelGesamt.font = Font.mediumSystemFont(11);
-    deathsLabelGesamt.textColor = dColor;
+    const deathsLabel = deathsStack.addText(formatCases(data.areaNewDeaths) + DELIMITER + formatCases(data.areaDeaths));
+    deathsLabel.font = Font.mediumSystemFont(11);
+    deathsLabel.textColor = COLOR_FG;
     deathsStack.addSpacer();
     
-    stack.addSpacer(space);
+    stack.addSpacer(1);
     
     // Active Cases
     
@@ -350,113 +359,119 @@ function createCasesBlock(stack, data) {
     gesCasesStack.setPadding(2, 5, 2, 2);
     
     gesCasesStack.centerAlignContent();
-    gesCasesStack.backgroundColor = bgColor;
+    gesCasesStack.backgroundColor = COLOR_BG;
     gesCasesStack.cornerRadius = 6;
     gesCasesStack.size = new Size(130, 18);
     
-    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
-    const areaGesActiveLabel = gesCasesStack.addText('📈 ' + formatCases(activeCases));
-    areaGesActiveLabel.font = Font.mediumSystemFont(11);
-    areaGesActiveLabel.lineLimit = 1;
-    areaGesActiveLabel.textColor = Color.black();
+    const gesCasesSymbol = gesCasesStack.addText('📈 ');
+    gesCasesSymbol.font = Font.mediumSystemFont(11);
+    gesCasesStack.addSpacer(1);
+    
+    // number of new cases
     
     let newActiveCases = data.areaNewCases - data.areaNewHealthy - data.areaNewDeaths;
     if (newActiveCases > 0) {
-        const newActiveCasesLabel = gesCasesStack.addText(' (+ ' + formatCases(newActiveCases) + ')');
+        const newActiveCasesLabel = gesCasesStack.addText(formatCases(newActiveCases));
         newActiveCasesLabel.font = Font.mediumSystemFont(11);
-        newActiveCasesLabel.lineLimit = 1;
-        newActiveCasesLabel.textColor = cColor;
+        newActiveCasesLabel.textColor = COLOR_INFECTED;
     }
     else if (newActiveCases < 0) {
-        const newActiveCasesLabel = gesCasesStack.addText(' (- ' + formatCases(Math.abs(newActiveCases)) + ')');
+        const newActiveCasesLabel = gesCasesStack.addText(formatCases(Math.abs(newActiveCases)));
         newActiveCasesLabel.font = Font.mediumSystemFont(11);
-        newActiveCasesLabel.lineLimit = 1;
-        newActiveCasesLabel.textColor = hColor;
+        newActiveCasesLabel.textColor = COLOR_HEALTHY;
     }
     else if (newActiveCases == 0) {
-        const newActiveCasesLabel = gesCasesStack.addText(' (± 0)');
+        const newActiveCasesLabel = gesCasesStack.addText('±0');
         newActiveCasesLabel.font = Font.mediumSystemFont(11);
-        newActiveCasesLabel.lineLimit = 1;
-        newActiveCasesLabel.textColor = Color.black;
+        newActiveCasesLabel.textColor = COLOR_FG;
+    }
+    
+    // delimiter between number of new cases and total number of cases
+    
+    const gesCasesDelimiter = gesCasesStack.addText(DELIMITER);
+    gesCasesDelimiter.font = Font.mediumSystemFont(11);
+    gesCasesDelimiter.textColor = COLOR_FG;
+    
+    // total number of cases
+    
+    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
+    if (activeCases > 0) {
+        const activeCasesLabel = gesCasesStack.addText(formatCases(activeCases));
+        activeCasesLabel.font = Font.mediumSystemFont(11);
+        activeCasesLabel.textColor = COLOR_INFECTED;
+    }
+    else if (activeCases < 0) {
+        const activeCasesLabel = gesCasesStack.addText(formatCases(Math.abs(activeCases)));
+        activeCasesLabel.font = Font.mediumSystemFont(11);
+        activeCasesLabel.textColor = COLOR_HEALTHY;
+    }
+    else if (activeCases == 0) {
+        const activeCasesLabel = gesCasesStack.addText('±0');
+        activeCasesLabel.font = Font.mediumSystemFont(11);
+        activeCasesLabel.textColor = COLOR_FG;
     }
    
     gesCasesStack.addSpacer();
 }
 
 function createHospitalBlock(stack, data) {
-    let smoothDark = (Device.isUsingDarkAppearance() && ENABLE_SMOOTH_DARK_MODE);
-    let bgColor = smoothDark ? altBackgroundColor : backgroundColor;
-    let cColor = smoothDark ? altColorCases : colorCases;
-    let hColor = smoothDark ? altColorHealthy : colorHealthy;
-    let dColor = smoothDark ? altColorDeaths : colorDeahts;
-    let space = 1;
-
     let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
-    stack.addSpacer(space)
+    stack.addSpacer(1);
 
-    // Hospital Overview
+    // Hospital
+    
     const hospitalStack = stack.addStack();
     hospitalStack.setPadding(2, 5, 2, 2);
     hospitalStack.centerAlignContent();
-    hospitalStack.backgroundColor = bgColor;
+    hospitalStack.backgroundColor = COLOR_BG;
     hospitalStack.cornerRadius = 6;
     hospitalStack.size = new Size(130, 18);
 
     const hospitalLabelSymbol = hospitalStack.addText('🏥 ');
     hospitalLabelSymbol.font = Font.mediumSystemFont(11);
-    hospitalLabelSymbol.textColor = dColor;
     hospitalStack.addSpacer(1);
-    const hospitalLabelTxt = hospitalStack.addText(formatCases(data.covidHospital) + ' ');
-    hospitalLabelTxt.font = Font.mediumSystemFont(11);
-    hospitalLabelTxt.textColor = dColor;
-    const hospitalLabelRel = hospitalStack.addText('(' + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + '%)');
-    hospitalLabelRel.font = Font.mediumSystemFont(11);
-    hospitalLabelRel.textColor = dColor;
+    const hospitalLabel = hospitalStack.addText(formatCases(data.covidHospital) + DELIMITER + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + '%');
+    hospitalLabel.font = Font.mediumSystemFont(11);
+    hospitalLabel.textColor = COLOR_FG;
     hospitalStack.addSpacer();
 
-    stack.addSpacer(space);
+    stack.addSpacer(1);
 
-    // Ventilated Overview
+    // Ventilated
+    
     const ventStack = stack.addStack();
     ventStack.setPadding(2, 5, 2, 2);
     ventStack.centerAlignContent();
-    ventStack.backgroundColor = bgColor;
+    ventStack.backgroundColor = COLOR_BG;
     ventStack.cornerRadius = 6;
     ventStack.size = new Size(130, 18);
 
     const ventLabelSymbol = ventStack.addText('🫁 ');
     ventLabelSymbol.font = Font.mediumSystemFont(11);
-    ventLabelSymbol.textColor = dColor;
     ventStack.addSpacer(1);
-    const ventLabelTxt = ventStack.addText(formatCases(data.covidVentilated) + ' ');
-    ventLabelTxt.font = Font.mediumSystemFont(11);
-    ventLabelTxt.textColor = dColor;
-    const ventLabelRel = ventStack.addText('(' + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + '%)');
-    ventLabelRel.font = Font.mediumSystemFont(11);
-    ventLabelRel.textColor = dColor;
+    const ventLabel = ventStack.addText(formatCases(data.covidVentilated) + DELIMITER + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + '%');
+    ventLabel.font = Font.mediumSystemFont(11);
+    ventLabel.textColor = COLOR_FG;
     ventStack.addSpacer();
 
-    stack.addSpacer(space);
+    stack.addSpacer(1);
 
-    // Ventilated Overview
+    // Free beds
+    
     const bedsStack = stack.addStack();
     bedsStack.setPadding(2, 5, 2, 2);
     bedsStack.centerAlignContent();
-    bedsStack.backgroundColor = bgColor;
+    bedsStack.backgroundColor = COLOR_BG;
     bedsStack.cornerRadius = 6;
     bedsStack.size = new Size(130, 18);
 
     const bedsSymbol = bedsStack.addText('🛌 ');
     bedsSymbol.font = Font.mediumSystemFont(11);
-    bedsSymbol.textColor = dColor;
     bedsStack.addSpacer(1);
-    const bedsTxt = bedsStack.addText(formatCases(data.bedsFree) + ' ');
-    bedsTxt.font = Font.mediumSystemFont(11);
-    bedsTxt.textColor = dColor;
-    const bedsRelTxt = bedsStack.addText('(' + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + '%)');
-    bedsRelTxt.font = Font.mediumSystemFont(11);
-    bedsRelTxt.textColor = dColor;
+    const beds = bedsStack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + '%');
+    beds.font = Font.mediumSystemFont(11);
+    beds.textColor = COLOR_FG;
     bedsStack.addSpacer();
 }
 
@@ -479,24 +494,26 @@ function createIncTrendBlock(stack, data) {
 }
 
 function createRFactorBlock(stack, data, fontsize) {
-    let smoothDark = (Device.isUsingDarkAppearance() && ENABLE_SMOOTH_DARK_MODE);
-    let bgColor = smoothDark ? altBackgroundColor : backgroundColor;
-    let dColor = smoothDark ? altColorDeaths : colorDeahts;
-
     stack.setPadding(2, 2, 2, 2);
     stack.centerAlignContent();
-    stack.backgroundColor = bgColor;
+    stack.backgroundColor = COLOR_BG;
     stack.cornerRadius = 6;
 
     const rLabel = stack.addText('R: ' + data.r_factor_today + ' ' + getRTrend(data.r_factor_today, data.r_factor_yesterday));
     rLabel.font = Font.mediumSystemFont(fontsize);
-    rLabel.textColor = dColor;
+    rLabel.textColor = COLOR_FG;
 }
 
 function createUpdatedLabel(label, data) {
     const updateLabel = label.addText(`${data.updated.substr(0, 10)} `);
     updateLabel.font = Font.systemFont(9);
 }
+
+/***************************************************************************
+ * 
+ * Helper functions
+ * 
+***************************************************************************/
 
 function getFormatedDateBeforeDays(offset) {
     let today = new Date();
@@ -794,7 +811,10 @@ function columnGraph(data, width, height) {
 
 function getIncidenceColor(incidence) {
     let color = LIMIT_GREEN_COLOR;
-    if (incidence >= LIMIT_DARKRED) {
+    
+    if (incidence >= LIMIT_DARKDARKRED) {
+        color = LIMIT_DARKDARKRED_COLOR;
+    } else if (incidence >= LIMIT_DARKRED) {
         color = LIMIT_DARKRED_COLOR;
     } else if (incidence >= LIMIT_RED) {
         color = LIMIT_RED_COLOR;
@@ -803,6 +823,7 @@ function getIncidenceColor(incidence) {
     } else if (incidence >= LIMIT_YELLOW) {
         color = LIMIT_YELLOW_COLOR;
     }
+    
     return color;
 }
 
