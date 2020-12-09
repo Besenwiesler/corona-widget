@@ -2,20 +2,12 @@
 
 COVID-19-Widget für [Scriptable](https://scriptable.app) und iOS/iPadOS.
 
-Das Widget zeigt Informationen wie Inzidenzwert und seinen Verlauf, die Anzahl der Neuinfizierten oder den R-Faktor innerhalb Deutschlands 🇩🇪 an.
+Das Widget zeigt Informationen wie Inzidenzwert und seinen Verlauf, die Anzahl der Neuinfizierten oder den R-Faktor innerhalb Deutschlands an.
 Das Widget kann per Parameter so eingestellt werden, dass die Zahlen für einen bestimmten Landkreis, ein bestimmtes Bundesland oder Deutschland angezeigt werden. Außerdem kann ein eigener Name für Landkreis oder Bundesland eingestellt werden.
 
 Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Mit der Variante von diesem Fork wurden nur geringfügige Anpassungen und kosmetischen Änderungen vorgenommen.
 
-# Screenshots
-
-Widget in Größe Small:
-
-<img width="25%" height="25%" src=screenshotSmall.jpg/>
-
-Widget in Größe Medium (mit mehr Informationen auf der rechten Seite):
-
-<img width="50%" height="50%" src=screenshotMedium.jpg/>
+<img width="357px" height="352px" src="screenshot.jpg"/>
 
 # Installation
 
