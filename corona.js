@@ -1,9 +1,12 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: deep-brown; icon-glyph: magic;
+// icon-color: red; icon-glyph: briefcase-medical;
+
 // LICENCE: Robert Koch-Institut (RKI), dl-de/by-2-0
+
+// URL of GitHub repository: https://github.com/Besenwiesler/incidence
 // Fork of https://github.com/tzschies/incidence with minor adjustments only
-// https://github.com/Besenwiesler/incidence
+
 
 /**
  * For configuration via widget parameters see:
@@ -488,7 +491,7 @@ function createIncTrendBlock(stack, data) {
 
     const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
     const incidenceLabelTrend = stack.addText('' + incidenceTrend);
-    incidenceLabelTrend.font = Font.mediumSystemFont(20);
+    incidenceLabelTrend.font = Font.boldSystemFont(25);
     incidenceLabelTrend.rightAlignText();
     incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
 }
@@ -755,6 +758,8 @@ function getTrendColor(arrow) {
         color = LIMIT_RED_COLOR;
     } else if (arrow === '→') {
         color = LIMIT_ORANGE_COLOR;
+    } else if (arrow === '↘') {
+        color = LIMIT_YELLOW_COLOR;
     } else {
         color = LIMIT_GREEN_COLOR;
     }
