@@ -286,9 +286,13 @@ function createCasesBlock(stack, data) {
     casesLabelSymbol.font = Font.mediumSystemFont(11);
     casesStack.addSpacer(1);
     
-    const casesNewLabel = casesStack.addText(formatCases(data.areaNewCases));
+    const casesNewLabel = casesStack.addText(formatCases(Math.abs(data.areaNewCases)));
     casesNewLabel.font = Font.mediumSystemFont(11);
-    casesNewLabel.textColor = COLOR_INFECTED;
+    if (data.areaNewCases > 0) {
+      casesNewLabel.textColor = COLOR_INFECTED;
+    } else if (data.areaNewCases < 0) {
+      casesNewLabel.textColor = COLOR_HEALTHY;
+    }
     
     const casesDelimiterLabel = casesStack.addText(DELIMITER);
     casesDelimiterLabel.font = Font.mediumSystemFont(11);
@@ -366,7 +370,7 @@ function createCasesBlock(stack, data) {
     
     // number of new cases
     
-    let newActiveCases = Math.abs(data.areaNewCases) - Math.abs(data.areaNewHealthy) - Math.abs(data.areaNewDeaths);
+    let newActiveCases = data.areaNewCases - data.areaNewHealthy - data.areaNewDeaths;
     if (newActiveCases > 0) {
         const newActiveCasesLabel = gesCasesStack.addText(formatCases(newActiveCases));
         newActiveCasesLabel.font = Font.mediumSystemFont(11);
@@ -391,7 +395,7 @@ function createCasesBlock(stack, data) {
     
     // total number of cases
     
-    let activeCases = Math.abs(data.areaCases) - Math.abs(data.areaHealthy) - Math.abs(data.areaDeaths);
+    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
     if (activeCases > 0) {
         const activeCasesLabel = gesCasesStack.addText(formatCases(activeCases));
         activeCasesLabel.font = Font.mediumSystemFont(11);
@@ -827,7 +831,7 @@ function getIncidenceColor(incidence) {
 }
 
 function formatCases(cases) {
-	return formatedCases = getRoundedNumber(Math.abs(cases)).toLocaleString('de-DE');
+	return formatedCases = getRoundedNumber(cases).toLocaleString('de-DE');
 }
 
 function getRoundedNumber(num) {
