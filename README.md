@@ -59,27 +59,27 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
 - Graphischer Verlauf der Inzidenz in den letzten vier Wochen.
 - Datum der letzten Aktualisierung der Daten beim RKI.
 
-Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen angezeigt: 
+Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Landkreis/Bundesland/Deutschland) angezeigt: 
 - 🔴
-  - Neuinfizierte am heutigen Tag im Landkreis/Bundesland/Deutschland
-  - Die Gesamtzahl der jeweiligen Region
+  - COVID-19-Fälle im Vergleich zum Vortag. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
+  - Die Gesamtzahl der Fälle
 - 🟢
-  - Neugenesene am heutigen Tag im Landkreis/Bundesland/Deutschland
-  - Die Gesamtzahl der jeweiligen Region
+  - Neugenesene am heutigen Tag
+  - Die Gesamtzahl der Genesenen
 - 🪦
-  - Neue Todesfälle am heutigen Tag im Landkreis/Bundesland/Deutschland
-  - Die Gesamtzahl der jeweiligen Region
+  - Neue Todesfälle am heutigen Tag
+  - Die Gesamtzahl der Todesfälle
 - 📈
-  - Aktive Fälle im Landkreis/Bundesland/Deutschland von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird die Zahl rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
-  - Die Gesamtzahl der aktiven Fälle der jeweiligen Region
+  - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
+  - Die Gesamtzahl der aktiven Fälle
 - 🏥
-  - Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden im Landkreis/Bundesland/Deutschland
+  - Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden
   - Der relative Anteil zu den aktuell Infizierten
 - 🫁
-  - Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden im Landkreis/Bundesland/Deutschland
+  - Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden
   - Der relative Anteil zu den aktuell Infizierten
 - 🛌
-  - Anzahl freier Intensivbetten im Landkreis/Bundesland/Deutschland
+  - Anzahl freier Intensivbetten
   - Der relative Anteil der Gesamtintensivbetten
 
 Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
