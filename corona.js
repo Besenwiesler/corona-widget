@@ -1,7 +1,3 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: red; icon-glyph: briefcase-medical;
-
 // LICENCE: Robert Koch-Institut (RKI), dl-de/by-2-0
 
 // URL of GitHub repository: https://github.com/Besenwiesler/incidence
@@ -163,15 +159,13 @@ Script.complete();
 ***************************************************************************/
 
 function createWaitMsg(stack) {
-    const errorLabel = stack.addText("Daten nicht verfügbar. \nReload erfolgt... \nBitte warten.");
+    const errorLabel = stack.addText("Corona-Widget\n\nDaten derzeit nicht verfügbar.");
     errorLabel.font = Font.mediumSystemFont(12);
-    errorLabel.textColor = Color.gray();
 }
 
 function createWaitLocationMsg(stack) {
-    const loadingIndicator = stack.addText("Ort wird ermittelt...".toUpperCase());
-    loadingIndicator.font = Font.mediumSystemFont(13);
-    loadingIndicator.textOpacity = 0.5;
+    const loadingIndicator = stack.addText("Corona-Widget\n\nOrt wird ermittelt...");
+    loadingIndicator.font = Font.mediumSystemFont(12);
 }
 
 async function createWidget() {
@@ -372,7 +366,7 @@ function createCasesBlock(stack, data) {
     
     // number of new cases
     
-    let newActiveCases = data.areaNewCases - data.areaNewHealthy - data.areaNewDeaths;
+    let newActiveCases = Math.abs(data.areaNewCases) - Math.abs(data.areaNewHealthy) - Math.abs(data.areaNewDeaths);
     if (newActiveCases > 0) {
         const newActiveCasesLabel = gesCasesStack.addText(formatCases(newActiveCases));
         newActiveCasesLabel.font = Font.mediumSystemFont(11);
@@ -397,7 +391,7 @@ function createCasesBlock(stack, data) {
     
     // total number of cases
     
-    let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
+    let activeCases = Math.abs(data.areaCases) - Math.abs(data.areaHealthy) - Math.abs(data.areaDeaths);
     if (activeCases > 0) {
         const activeCasesLabel = gesCasesStack.addText(formatCases(activeCases));
         activeCasesLabel.font = Font.mediumSystemFont(11);
@@ -833,7 +827,7 @@ function getIncidenceColor(incidence) {
 }
 
 function formatCases(cases) {
-	return formatedCases = getRoundedNumber(cases).toLocaleString('de-DE');
+	return formatedCases = getRoundedNumber(Math.abs(cases)).toLocaleString('de-DE');
 }
 
 function getRoundedNumber(num) {
