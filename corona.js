@@ -141,16 +141,31 @@ if (args.widgetParameter) {
 } else {}
 
 if (!config.runsInWidget) {
-  MEDIUMWIDGET = true;
+    MEDIUMWIDGET = true;
 }
 
-let data = {};
-const widget = await createWidget();
-if (!config.runsInWidget) {
-  await widget.presentMedium();
+let data = await getData(0);
+if (data && typeof data !== 'undefined') {
+    const widget = await createWidget();
+    widget.refreshAfterDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
+    
+    if (!config.runsInWidget) {
+        await widget.presentMedium();
+    }
+    
+    Script.setWidget(widget);
+    Script.complete();
+} else { // no data
+    Script.refreshAfterDate = new Date(Date.now() + 1 * 1 * 60 * 1000);
+    if (!config.runsInWidget) {
+         const widget = new ListWidget();
+         const stack = widget.addStack();
+         createWaitMsg(stack);
+         Script.setWidget(widget);
+         Script.complete();
+    }
 }
-Script.setWidget(widget);
-Script.complete();
+
 
 /***************************************************************************
  * 
@@ -169,44 +184,31 @@ function createWaitLocationMsg(stack) {
 }
 
 async function createWidget() {
-    const data = await getData(0);
     const list = new ListWidget();
     list.setPadding(10, 5, 10, 5);
     const stack = list.addStack();
     stack.layoutHorizontally();
 
-    if (data && typeof data !== 'undefined') {
-        if (!data.shouldCache) {
-            list.addSpacer(2);
-            createWaitLocationMsg(list);
-        } else {
-            list.refreshAfterDate = new Date(Date.now() + 6 * 60 * 60 * 1000);
-        }
+    if (MEDIUMWIDGET) {
+        const left = stack.addStack();
+        left.size = new Size(130, 130);
+        left.layoutVertically();
 
-        if (MEDIUMWIDGET) {
-            const left = stack.addStack();
-            left.size = new Size(130, 130);
-            left.layoutVertically();
-
-            createLeftSide(left, data);
-            stack.addSpacer(20);
-            const right = stack.addStack();
-            right.size = new Size(130, 130);
-            right.layoutVertically();
-            createRightSide(right, data);
-        } else {
-            const main = stack.addStack();
-            main.size = new Size(130, 130);
-            main.layoutVertically();
-            main.useDefaultPadding();
-            main.centerAlignContent();
-            
-            createLeftSide(main, data);
-        }
+        createLeftSide(left, data);
+        
+        stack.addSpacer(20);
+        const right = stack.addStack();
+        right.size = new Size(130, 130);
+        right.layoutVertically();
+        createRightSide(right, data);
     } else {
-        list.addSpacer();
-        createWaitMsg(list);
-        list.refreshAfterDate = new Date(Date.now() + 1 * 15 * 1000); // Reload in 15 Sekunden
+        const main = stack.addStack();
+        main.size = new Size(130, 130);
+        main.layoutVertically();
+        main.useDefaultPadding();
+        main.centerAlignContent();
+            
+        createLeftSide(main, data);
     }
 
     return list;
