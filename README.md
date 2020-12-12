@@ -61,7 +61,7 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
 
 (Box um den) Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
 
-<img width="138" height="214" src="colorScheme.jpg"/>
+<img width="118" height="202" src="colorScheme.png"/>
 
 Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Landkreis/Bundesland/Deutschland) angezeigt: 
 - 🔴
