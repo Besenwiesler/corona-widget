@@ -60,6 +60,7 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
 - Datum der letzten Aktualisierung der Daten beim RKI.
 
 (Box um den) Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
+
 <img width="138" height="214" src="colorScheme.jpg"/>
 
 Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Landkreis/Bundesland/Deutschland) angezeigt: 
