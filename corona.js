@@ -507,12 +507,9 @@ function createIncidenceBlock(stack, data) {
 function createRFactorBlock(stack, data, fontsize) {
     stack.setPadding(2, 2, 2, 2);
     stack.centerAlignContent();
-    stack.backgroundColor = COLOR_BG;
-    stack.cornerRadius = 6;
-
+    
     const rLabel = stack.addText('R: ' + data.r_factor_today + ' ' + getRTrend(data.r_factor_today, data.r_factor_yesterday));
     rLabel.font = Font.mediumSystemFont(fontsize);
-    rLabel.textColor = COLOR_FG;
 }
 
 function createUpdatedLabel(label, data) {
