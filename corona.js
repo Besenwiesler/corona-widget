@@ -37,22 +37,26 @@ const showIncidenceYesterday = false;
  * 
 ***************************************************************************/
 
-const COLOR_BG = new Color('f0f0f0');
+const COLOR_BG = new Color('#f0f0f0');
 const COLOR_FG = Color.black();
-const COLOR_INFECTED = new Color('fe0000');
-const COLOR_HEALTHY = new Color('008800');
+const COLOR_INFECTED = new Color('#fe0000');
+const COLOR_HEALTHY = new Color('#008800');
 
-const LIMIT_DARKDARKRED = 250;
-const LIMIT_DARKRED = 100;
-const LIMIT_RED = 50;
-const LIMIT_ORANGE = 35;
-const LIMIT_YELLOW = 25;
-const LIMIT_DARKDARKRED_COLOR = new Color('941100');
-const LIMIT_DARKRED_COLOR = new Color('c01a00');
-const LIMIT_RED_COLOR = new Color('f92206');
-const LIMIT_ORANGE_COLOR = new Color('faa31b');
-const LIMIT_YELLOW_COLOR = new Color('f7dd31');
-const LIMIT_GREEN_COLOR = new Color('00cc00');
+const TIER_1_COLOR = new Color('#008800'); // light yellow as with RKI dashboard is #fbf7c9 -- using green here for readability
+const TIER_2_COLOR = new Color('#faee7e'); // yellow
+const TIER_3_COLOR = new Color('#fab332'); // orange
+const TIER_4_COLOR = new Color('#d03622'); // red
+const TIER_5_COLOR = new Color('#931114'); // dark red
+const TIER_6_COLOR = new Color('#671213'); // even darker red
+const TIER_7_COLOR = new Color('#d80082'); // pink
+
+const TIER_1_LIMIT = 0;
+const TIER_2_LIMIT = 5;
+const TIER_3_LIMIT = 25;
+const TIER_4_LIMIT = 50;
+const TIER_5_LIMIT = 100;
+const TIER_6_LIMIT = 250;
+const TIER_7_LIMIT = 500;
 
 /***************************************************************************
  * 
@@ -751,29 +755,31 @@ function getTrendArrowFactor(rValue) {
 }
 
 function getTrendColor(arrow) {
-    let color;
+    let color = TIER_1_COLOR;
+    
     if (arrow === '↑') {
-        color = LIMIT_DARKRED_COLOR;
+        color = TIER_6_COLOR;
     } else if (arrow === '↗') {
-        color = LIMIT_RED_COLOR;
+        color = TIER_4_COLOR;
     } else if (arrow === '→') {
-        color = LIMIT_ORANGE_COLOR;
+        color = TIER_3_COLOR;
     } else if (arrow === '↘') {
-        color = LIMIT_YELLOW_COLOR;
-    } else {
-        color = LIMIT_GREEN_COLOR;
+        color = TIER_2_COLOR;
     }
-    return (color);
+    
+    return color;
 }
 
 function getRTrend(today, yesterday) {
     let trend = '→';
+    
     if (today > yesterday) {
         trend = '↗';
     } else if (today < yesterday) {
         trend = '↘';
     }
-    return (trend);
+    
+    return trend;
 }
 
 function createGraph(row, data) {
@@ -815,19 +821,26 @@ function columnGraph(data, width, height) {
 }
 
 function getIncidenceColor(incidence) {
-    let color = LIMIT_GREEN_COLOR;
+    let color = TIER_1_COLOR;
     
-    if (incidence >= LIMIT_DARKDARKRED) {
-        color = LIMIT_DARKDARKRED_COLOR;
-    } else if (incidence >= LIMIT_DARKRED) {
-        color = LIMIT_DARKRED_COLOR;
-    } else if (incidence >= LIMIT_RED) {
-        color = LIMIT_RED_COLOR;
-    } else if (incidence >= LIMIT_ORANGE) {
-        color = LIMIT_ORANGE_COLOR;
-    } else if (incidence >= LIMIT_YELLOW) {
-        color = LIMIT_YELLOW_COLOR;
+    if (incidence >= TIER_7_LIMIT) {
+        color = TIER_7_COLOR;
     }
+    else if (incidence >= TIER_6_LIMIT) {
+        color = TIER_6_COLOR;
+    } 
+    else if (incidence >= TIER_5_LIMIT) {
+        color = TIER_5_COLOR;
+    } 
+    else if (incidence >= TIER_4_LIMIT) {
+        color = TIER_4_COLOR;
+    }
+    else if (incidence >= TIER_3_LIMIT) {
+        color = TIER_3_COLOR;
+    } 
+    else if (incidence >= TIER_2_LIMIT) {
+        color = TIER_2_COLOR;
+    } 
     
     return color;
 }
