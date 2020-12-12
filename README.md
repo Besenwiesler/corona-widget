@@ -7,7 +7,7 @@ Das Widget kann per Parameter so eingestellt werden, dass die Zahlen für einen 
 
 Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Mit der Variante von diesem Fork wurden nur geringfügige Anpassungen und kosmetischen Änderungen vorgenommen.
 
-<img width="357px" height="352px" src="screenshot.jpg"/>
+<img width="357px" height="352px" src="screenshot.png"/>
 
 # Installation
 
@@ -58,6 +58,9 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
     - ↘︎: Der Wert von heute ist niedriger als der Wert von gestern.
 - Graphischer Verlauf der Inzidenz in den letzten vier Wochen.
 - Datum der letzten Aktualisierung der Daten beim RKI.
+
+(Box um den) Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
+<img width="138" height="214" src="colorScheme.jpg"/>
 
 Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Landkreis/Bundesland/Deutschland) angezeigt: 
 - 🔴
