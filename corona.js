@@ -42,7 +42,7 @@ const COLOR_FG = Color.black();
 const COLOR_INFECTED = new Color('#fe0000');
 const COLOR_HEALTHY = new Color('#008800');
 
-const TIER_1_COLOR = new Color('#008800'); // light yellow as with RKI dashboard is #fbf7c9 -- using green here for readability
+const TIER_1_COLOR = new Color('#fbf7c9'); // light yellow
 const TIER_2_COLOR = new Color('#faee7e'); // yellow
 const TIER_3_COLOR = new Color('#fab332'); // orange
 const TIER_4_COLOR = new Color('#d03622'); // red
@@ -483,14 +483,25 @@ function createHospitalBlock(stack, data) {
 }
 
 function createIncidenceBlock(stack, data) {
+    stack.setPadding(2, 2, 2, 2);
+    stack.centerAlignContent();
+    stack.cornerRadius = 10;
+    
     let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
     let incidence = Math.round(areaIncidence);
     const incidenceLabel = stack.addText(incidence.toLocaleString());
     incidenceLabel.font = Font.boldSystemFont(25);
     incidenceLabel.textColor = getIncidenceColor(incidence);
+    if (incidence < TIER_3_LIMIT) {
+        stack.backgroundColor = Color.black();
+    }
 }
 
 function createIncTrendBlock(stack, data) {
+    stack.setPadding(2, 2, 2, 2);
+    stack.centerAlignContent();
+    stack.cornerRadius = 10;
+    
     let length = data.areaIncidenceLastWeek.length;
 
     const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
@@ -755,16 +766,16 @@ function getTrendArrowFactor(rValue) {
 }
 
 function getTrendColor(arrow) {
-    let color = TIER_1_COLOR;
+    let color = COLOR_HEALTHY;
     
     if (arrow === '↑') {
-        color = TIER_6_COLOR;
-    } else if (arrow === '↗') {
         color = TIER_4_COLOR;
+    } else if (arrow === '↗') {
+        color = TIER_3_COLOR;
     } else if (arrow === '→') {
         color = TIER_3_COLOR;
     } else if (arrow === '↘') {
-        color = TIER_2_COLOR;
+        color = TIER_3_COLOR;
     }
     
     return color;
