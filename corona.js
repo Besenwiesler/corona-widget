@@ -229,20 +229,18 @@ function createLeftSide(list, data) {
 
     createHeader(headerLabel, data);
 
-    list.addSpacer(5);
+    list.addSpacer(3);
     
     const middle = list.addStack();
     middle.layoutHorizontally();
     middle.centerAlignContent();
-    middle.size = new Size(headerWidth, 28);
+    middle.size = new Size(headerWidth, 35);
     const incStack = middle.addStack();
-    const trendStack = middle.addStack();
     createIncidenceBlock(incStack, data);
-    createIncTrendBlock(trendStack, data);
 
     // R-Faktor
     
-    list.addSpacer(2);
+    list.addSpacer(3);
     const bottom = list.addStack();
     bottom.layoutHorizontally();
     bottom.centerAlignContent();
@@ -253,10 +251,10 @@ function createLeftSide(list, data) {
     rfactorStack.size = new Size(headerWidth / 2, 12);
     createRFactorBlock(rfactorStack, data, 10);
 
-    list.addSpacer(15);
+    list.addSpacer(10);
     createGraph(list, data);
 
-    list.addSpacer(2);
+    list.addSpacer(1);
     const datestack = list.addStack();
     datestack.layoutHorizontally();
     datestack.centerAlignContent();
@@ -483,30 +481,25 @@ function createHospitalBlock(stack, data) {
 }
 
 function createIncidenceBlock(stack, data) {
-    stack.setPadding(2, 2, 2, 2);
+    stack.setPadding(3, 10, 3, 10);
     stack.centerAlignContent();
     stack.cornerRadius = 10;
     
     let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
     let incidence = Math.round(areaIncidence);
     const incidenceLabel = stack.addText(incidence.toLocaleString());
-    incidenceLabel.font = Font.boldSystemFont(25);
-    incidenceLabel.textColor = getIncidenceColor(incidence);
-    if (incidence < TIER_3_LIMIT) {
-        stack.backgroundColor = Color.black();
-    }
-}
-
-function createIncTrendBlock(stack, data) {
-    stack.setPadding(2, 2, 2, 2);
-    stack.centerAlignContent();
-    stack.cornerRadius = 10;
+    incidenceLabel.font = Font.boldSystemFont(20);
+    
+    stack.borderColor = getIncidenceColor(incidence);
+    stack.borderWidth = 5;
+    
+    // trend
     
     let length = data.areaIncidenceLastWeek.length;
 
     const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
     const incidenceLabelTrend = stack.addText('' + incidenceTrend);
-    incidenceLabelTrend.font = Font.boldSystemFont(25);
+    incidenceLabelTrend.font = Font.boldSystemFont(20);
     incidenceLabelTrend.rightAlignText();
     incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
 }
