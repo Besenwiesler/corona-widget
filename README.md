@@ -46,20 +46,15 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
   - Beispiel zur Berechnung: Vor 7 Tagen gab es im 7-Tage Schnitt 4 Neuinfektionen. Heute gibt es im 7-Tage-Schnitt 16 Neuinfektionen. Unter der Annahme der 3,5 Tage und einem R-Faktor von 2 haben die 4 Neuinfektionen nach 3,5 Tagen also 8 Personen angesteckt, welche nach weiteren 3,5 Tagen 16 Personen angesteckt haben. Der R-Faktor berechnet sich dann wie folgt:
     - R = Wurzel(Neuinfektionen_heute/Neuinfektionen_vor_7_Tagen) = Wurzel(16/4) = 2
   - Der Trendpfeil ergibt sich also aus dem R-Faktor. Ist dieser
-    - zwischen 0,95 und 1,05, so bleibt die Inzidenz in etwa konstant (→),
-    - ist er zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎),
-    - über 1,1 steigt sie stark (↑),
-    - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎),
-    - unter 0,9 sinkt sie stark (↓).
-- Geschätzter R-Faktor mit Trendpfeil.
-  - Der geschätzte R-Faktor wird angezeigt, nach der Berechnung wie oben beschrieben. Für diesen gibt es ebenfalls einen Trendpfeil. Dieser vergleicht den geschätzten R-Faktor von heute mit dem Wert von gestern:
-    - →: Die Werte von heute und gestern sind gleich.
-    - ↗︎: Der Wert von heute ist größer als der Wert von gestern.
-    - ↘︎: Der Wert von heute ist niedriger als der Wert von gestern.
+    - zwischen 0,95 und 1,05, so bleibt die Inzidenz in etwa konstant (→ orange eingefärbt),
+    - ist er zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎ orange eingefärbt),
+    - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎ orange eingefärbt),
+    - über 1,1 steigt sie stark (↑ rot eingefärbt),
+    - unter 0,9 sinkt sie stark (↓ grün eingefärbt).
 - Graphischer Verlauf der Inzidenz in den letzten vier Wochen.
 - Datum der letzten Aktualisierung der Daten beim RKI.
 
-(Box um den) Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
+"Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
 
 <img width="118" height="202" src="colorScheme.png"/>
 
