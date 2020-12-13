@@ -19,12 +19,6 @@
 const datumType = 'MeldeDatum';
 
 // because there are often late registrations some days later, 
-// you can change the determination of the trend
-// set to 1: the trend is positive, if the incidence of yesterday is higher than the week before
-// set to 0: the trend is positive, if the incidence of today is higher than the week before
-const trendDaysOffset = 1;
-
-// because there are often late registrations some days later, 
 // you can optionally display the incidence of yesterday 
 // in most cases this is the more realistic value
 // set to true for showing Incidence of Yesterday
@@ -92,6 +86,7 @@ const EWZ_GER = 83020000;
 const INCIDENCE_DAYS = 28; // 4 Wochen
 
 const DELIMITER = ' ⚫︎ ';
+const FONT_SIZE_INCIDENCE = 22;
 
 const BUNDESLAENDER_SHORT = {
     'Baden-Württemberg': 'BW',
@@ -170,7 +165,6 @@ if (data && typeof data !== 'undefined') {
     }
 }
 
-
 /***************************************************************************
  * 
  * Functions to display widget content
@@ -220,6 +214,8 @@ async function createWidget() {
 
 function createLeftSide(list, data) {
     const headerWidth = 130;
+    
+    // Header: name of location
 
     const headerLabel = list.addStack();
     headerLabel.useDefaultPadding();
@@ -228,31 +224,33 @@ function createLeftSide(list, data) {
     headerLabel.size = new Size(headerWidth, 20);
 
     createHeader(headerLabel, data);
-
-    list.addSpacer(3);
     
-    const middle = list.addStack();
-    middle.layoutHorizontally();
-    middle.centerAlignContent();
-    middle.size = new Size(headerWidth, 35);
-    const incStack = middle.addStack();
-    createIncidenceBlock(incStack, data);
-
-    // R-Faktor
+    list.addSpacer(15);
     
-    list.addSpacer(3);
-    const bottom = list.addStack();
-    bottom.layoutHorizontally();
-    bottom.centerAlignContent();
-    bottom.size = new Size(headerWidth, 12);
-    const rfactorStack = bottom.addStack();
-    rfactorStack.layoutHorizontally();
-    rfactorStack.centerAlignContent();
-    rfactorStack.size = new Size(headerWidth / 2, 12);
-    createRFactorBlock(rfactorStack, data, 10);
+    // Incidence stack
+    
+    const inc = list.addStack();
+    inc.layoutHorizontally();
+    inc.centerAlignContent();
+    inc.size = new Size(headerWidth, 30);
+    const incStack = inc.addStack();
+    
+    // Incidence traffic light
+    
+    createIncidenceTrafficLight(incStack, data);
+    incStack.addSpacer(5);
+    
+    // Incidence plus trend
+    
+    createIncidenceValueAndTrend(incStack, data);
+    
+    // Incidence graph
 
-    list.addSpacer(10);
+    list.addSpacer(15);
+    
     createGraph(list, data);
+    
+    // Date
 
     list.addSpacer(1);
     const datestack = list.addStack();
@@ -273,6 +271,40 @@ function createHeader(stack, data) {
     const areanameLabel = stack.addText(data.areaName);
     areanameLabel.font = Font.boldSystemFont(15);
     areanameLabel.lineLimit = 1;
+}
+
+function createIncidenceTrafficLight(stack, data) {
+    let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
+    let incidence = Math.round(areaIncidence);
+    
+    // incidence traffic light
+    
+    const incidenceTrafficLight = stack.addText('●');
+    incidenceTrafficLight.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+    incidenceTrafficLight.textColor = getIncidenceColor(incidence);
+}
+
+function createIncidenceValueAndTrend(stack, data) {
+    let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
+    let incidence = Math.round(areaIncidence);
+   
+    // incidence
+    
+    const incidenceLabel = stack.addText(incidence.toLocaleString());
+    incidenceLabel.centerAlignText();
+    incidenceLabel.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+    
+    stack.addSpacer(3);
+
+    // trend
+    
+    let length = data.areaIncidenceLastWeek.length;
+
+    const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
+    const incidenceLabelTrend = stack.addText('' + incidenceTrend);
+    incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+    incidenceLabelTrend.centerAlignText();
+    incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
 }
 
 function createCasesBlock(stack, data) {
@@ -478,38 +510,6 @@ function createHospitalBlock(stack, data) {
     beds.font = Font.mediumSystemFont(11);
     beds.textColor = COLOR_FG;
     bedsStack.addSpacer();
-}
-
-function createIncidenceBlock(stack, data) {
-    stack.setPadding(3, 10, 3, 10);
-    stack.centerAlignContent();
-    stack.cornerRadius = 10;
-    
-    let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
-    let incidence = Math.round(areaIncidence);
-    const incidenceLabel = stack.addText(incidence.toLocaleString());
-    incidenceLabel.font = Font.boldSystemFont(20);
-    
-    stack.borderColor = getIncidenceColor(incidence);
-    stack.borderWidth = 5;
-    
-    // trend
-    
-    let length = data.areaIncidenceLastWeek.length;
-
-    const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
-    const incidenceLabelTrend = stack.addText('' + incidenceTrend);
-    incidenceLabelTrend.font = Font.boldSystemFont(20);
-    incidenceLabelTrend.rightAlignText();
-    incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
-}
-
-function createRFactorBlock(stack, data, fontsize) {
-    stack.setPadding(2, 2, 2, 2);
-    stack.centerAlignContent();
-    
-    const rLabel = stack.addText('R: ' + data.r_factor_today + ' ' + getRTrend(data.r_factor_today, data.r_factor_yesterday));
-    rLabel.font = Font.mediumSystemFont(fontsize);
 }
 
 function createUpdatedLabel(label, data) {
