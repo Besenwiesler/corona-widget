@@ -5,7 +5,7 @@ COVID-19-Widget für [Scriptable](https://scriptable.app) und iOS/iPadOS.
 Das Widget zeigt Informationen wie Inzidenzwert und seinen Verlauf, die Anzahl der Neuinfizierten oder den R-Faktor innerhalb Deutschlands an.
 Das Widget kann per Parameter so eingestellt werden, dass die Zahlen für einen bestimmten Landkreis, ein bestimmtes Bundesland oder Deutschland angezeigt werden. Außerdem kann ein eigener Name für Landkreis oder Bundesland eingestellt werden.
 
-Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Mit der Variante von diesem Fork wurden nur geringfügige Anpassungen und kosmetischen Änderungen vorgenommen.
+Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Mit der Variante von diesem Fork wurden nur geringfügige Anpassungen und kosmetischen Änderungen vorgenommen. Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern.
 
 <img width="357px" height="352px" src="screenshot.png"/>
 
@@ -58,7 +58,10 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
 
 <img width="118" height="202" src="colorScheme.png"/>
 
-Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Landkreis/Bundesland/Deutschland) angezeigt: 
+Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt:
+- 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl der geimpften Personen in der Region
+  - Quote der geimpften Personen in der Region im Verhältnis zur Gesamtbevölkerungszahl der Region
 - 🔴
   - COVID-19-Fälle im Vergleich zum Vortag. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
   - Die Gesamtzahl der Fälle
