@@ -3,6 +3,9 @@
 // URL of GitHub repository: https://github.com/Besenwiesler/incidence
 // Fork of https://github.com/tzschies/incidence with minor adjustments only
 
+// Vaccination API for RKI vaccination data: https://rki-vaccination-data.vercel.app
+// Code to display vaccination data: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+
 
 /**
  * For configuration via widget parameters see:
@@ -31,7 +34,7 @@ const showIncidenceYesterday = false;
  * 
 ***************************************************************************/
 
-const COLOR_BG = new Color('#f0f0f0');
+const COLOR_BG = new Color('#f8f8f8');
 const COLOR_FG = Color.black();
 const COLOR_INFECTED = new Color('#fe0000');
 const COLOR_HEALTHY = new Color('#008800');
@@ -72,7 +75,6 @@ const NEUE_TODESFAELLE = 'NeuerTodesfall+IN%281%2C-1%29';
 const apiUrlCasesLastDays = (GetLocation, StartDate) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?where=NeuerFall+IN%281%2C0%29${GetLocation}+AND+${datumType}+%3E%3D+TIMESTAMP+%27${StartDate}%27&objectIds=&time=&resultType=standard&outFields=AnzahlFall%2C${datumType}&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=${datumType}&outStatistics=%5B%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22AnzahlFall%22%2C%22outStatisticFieldName%22%3A%22value%22%7D%5D%0D%0A&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson&token=`;
 const apiUrlCases = (Filter, GetLandkreis) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?where=${Filter}${GetLandkreis}&objectIds=&time=&resultType=standard&outFields=AnzahlFall&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=false&cacheHint=false&orderByFields=&outStatistics=%5B%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22AnzahlFall%22%2C%22outStatisticFieldName%22%3A%22value%22%7D%5D%0D%0A&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson&token=`;
 const apiUrlDivi = (GetLocation) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/DIVI_Intensivregister_Landkreise/FeatureServer/0//query?where=${GetLocation}&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=%5B%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22faelle_covid_aktuell%22%2C%22outStatisticFieldName%22%3A%22faelle_covid_aktuell%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22faelle_covid_aktuell_beatmet%22%2C%22outStatisticFieldName%22%3A%22faelle_covid_aktuell_beatmet%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22betten_frei%22%2C%22outStatisticFieldName%22%3A%22betten_frei%22%7D%2C%0D%0A%7B%22statisticType%22%3A%22sum%22%2C%22onStatisticField%22%3A%22betten_gesamt%22%2C%22outStatisticFieldName%22%3A%22betten_gesamt%22%7D%5D&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=`;
-const apiRUrl = `https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting_Zahlen_csv.csv?__blob=publicationFile`;
 
 /***************************************************************************
  * 
@@ -87,8 +89,10 @@ const INCIDENCE_DAYS = 28; // 4 Wochen
 
 const DELIMITER = ' ⚫︎ ';
 const FONT_SIZE_INCIDENCE = 22;
+const ROWS_HEIGHT = 16;
+const ROWS_WIDTH = 140;
 
-const BUNDESLAENDER_SHORT = {
+const STATES_SHORT = {
     'Baden-Württemberg': 'BW',
     'Bayern': 'BY',
     'Berlin': 'BE',
@@ -107,6 +111,25 @@ const BUNDESLAENDER_SHORT = {
     'Thüringen': 'TH'
 };
 
+const STATES_VACCINATION_API = {
+    'Baden-Württemberg': 'Baden-W\u00fcrttemberg',
+    'Bayern': 'Bayern',
+    'Berlin': 'Berlin',
+    'Brandenburg': 'Brandenburg',
+    'Bremen': 'Bremen',
+    'Hamburg': 'Hamburg',
+    'Hessen': 'Hesse ',
+    'Mecklenburg-Vorpommern': 'Mecklenburg-Vorpommern',
+    'Niedersachsen': 'Niedersachsen',
+    'Nordrhein-Westfalen': 'Nordrhein-Westfalen',
+    'Rheinland-Pfalz': 'Rheinland-Pfalz',
+    'Saarland': 'Saarland',
+    'Sachsen': 'Sachsen',
+    'Sachsen-Anhalt': 'Sachsen-Anhalt',
+    'Schleswig-Holstein': 'Schleswig-Holstein',
+    'Thüringen': 'Th\u00fcringen',
+};
+
 const PCT_TREND_EQUAL = 5;
 const PCT_TREND_INCREASE = 10;
 
@@ -114,6 +137,10 @@ let getGermany = false;
 let getState = false;
 let fixedCoordinates = [];
 let individualName = '';
+
+let today = new Date();
+let cacheMinutes = 60;
+let vaccinated;
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
@@ -144,6 +171,7 @@ if (!config.runsInWidget) {
 }
 
 let data = await getData(0);
+await getNumbers();
 if (data && typeof data !== 'undefined') {
     const widget = await createWidget();
     widget.refreshAfterDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
@@ -156,13 +184,6 @@ if (data && typeof data !== 'undefined') {
     Script.complete();
 } else { // no data
     Script.refreshAfterDate = new Date(Date.now() + 1 * 1 * 60 * 1000);
-    if (!config.runsInWidget) {
-         const widget = new ListWidget();
-         const stack = widget.addStack();
-         createWaitMsg(stack);
-         Script.setWidget(widget);
-         Script.complete();
-    }
 }
 
 /***************************************************************************
@@ -171,32 +192,23 @@ if (data && typeof data !== 'undefined') {
  * 
 ***************************************************************************/
 
-function createWaitMsg(stack) {
-    const errorLabel = stack.addText("Corona-Widget\n\nDaten derzeit nicht verfügbar.");
-    errorLabel.font = Font.mediumSystemFont(12);
-}
-
-function createWaitLocationMsg(stack) {
-    const loadingIndicator = stack.addText("Corona-Widget\n\nOrt wird ermittelt...");
-    loadingIndicator.font = Font.mediumSystemFont(12);
-}
-
 async function createWidget() {
     const list = new ListWidget();
-    list.setPadding(10, 5, 10, 5);
+    list.setPadding(2, 5, 2, 5);
     const stack = list.addStack();
     stack.layoutHorizontally();
 
     if (MEDIUMWIDGET) {
         const left = stack.addStack();
-        left.size = new Size(130, 130);
+        left.size = new Size(140, 140);
         left.layoutVertically();
 
         createLeftSide(left, data);
         
-        stack.addSpacer(20);
+        stack.addSpacer(10);
+        
         const right = stack.addStack();
-        right.size = new Size(130, 130);
+        right.size = new Size(140, 140);
         right.layoutVertically();
         createRightSide(right, data);
     } else {
@@ -218,7 +230,7 @@ function createLeftSide(list, data) {
     // Header: name of location
 
     const headerLabel = list.addStack();
-    headerLabel.useDefaultPadding();
+    headerLabel.setPadding(0, 2, 2, 2);
     headerLabel.centerAlignContent();
     headerLabel.layoutHorizontally();
     headerLabel.size = new Size(headerWidth, 20);
@@ -308,15 +320,45 @@ function createIncidenceValueAndTrend(stack, data) {
 }
 
 function createCasesBlock(stack, data) {
+    // Vaccination
+    
+    const vaccinationStack = stack.addStack();
+    vaccinationStack.setPadding(0, 5, 2, 5);
+    vaccinationStack.centerAlignContent();
+    vaccinationStack.backgroundColor = COLOR_BG;
+    vaccinationStack.cornerRadius = 6;
+    vaccinationStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
+
+    const vaccinationLabelSymbol = vaccinationStack.addText('🧬 ');
+    vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
+    vaccinationStack.addSpacer(1);
+    if (getGermany && typeof vaccinated !== 'undefined') {
+      const vaccinationLabel = vaccinationStack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote + ' %');
+      vaccinationLabel.font = Font.mediumSystemFont(11);
+      vaccinationLabel.textColor = COLOR_FG;
+    } else if (getState && typeof vaccinated !== 'undefined') {
+      let state = data.stateVaccinationAPI;
+      
+      const vaccinationLabel = vaccinationStack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote + ' %');
+      vaccinationLabel.font = Font.mediumSystemFont(11);
+      vaccinationLabel.textColor = COLOR_FG;
+    } else {
+      const vaccinationLabel = vaccinationStack.addText('N/A');
+      vaccinationLabel.font = Font.mediumSystemFont(11);
+      vaccinationLabel.textColor = COLOR_FG;
+    }
+    vaccinationStack.addSpacer();
+    
+    stack.addSpacer(1);
   
     // Infected / Cases
     
     const casesStack = stack.addStack();
-    casesStack.setPadding(2, 5, 2, 2);
+    casesStack.setPadding(2, 5, 2, 5);
     casesStack.centerAlignContent();
     casesStack.backgroundColor = COLOR_BG;
     casesStack.cornerRadius = 6;
-    casesStack.size = new Size(130, 18);
+    casesStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const casesLabelSymbol = casesStack.addText('🔴 ');
     casesLabelSymbol.font = Font.mediumSystemFont(11);
@@ -345,11 +387,11 @@ function createCasesBlock(stack, data) {
     // Healthy
     
     const healthyStack = stack.addStack();
-    healthyStack.setPadding(2, 5, 2, 2);
+    healthyStack.setPadding(2, 5, 2, 5);
     healthyStack.centerAlignContent();
     healthyStack.backgroundColor = COLOR_BG;
     healthyStack.cornerRadius = 6;
-    healthyStack.size = new Size(130, 18);
+    healthyStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const healthyLabelSymbol = healthyStack.addText('🟢 ');
     healthyLabelSymbol.font = Font.mediumSystemFont(11);
@@ -374,11 +416,11 @@ function createCasesBlock(stack, data) {
     // Deaths
     
     const deathsStack = stack.addStack();
-    deathsStack.setPadding(2, 5, 2, 2);
+    deathsStack.setPadding(2, 5, 2, 5);
     deathsStack.centerAlignContent();
     deathsStack.backgroundColor = COLOR_BG;
     deathsStack.cornerRadius = 6;
-    deathsStack.size = new Size(130, 18);
+    deathsStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const deathsLabelSymbol = deathsStack.addText('🪦 ');
     deathsLabelSymbol.font = Font.mediumSystemFont(11);
@@ -393,12 +435,11 @@ function createCasesBlock(stack, data) {
     // Active Cases
     
     const gesCasesStack = stack.addStack();
-    gesCasesStack.setPadding(2, 5, 2, 2);
-    
+    gesCasesStack.setPadding(2, 5, 2, 5);    
     gesCasesStack.centerAlignContent();
     gesCasesStack.backgroundColor = COLOR_BG;
     gesCasesStack.cornerRadius = 6;
-    gesCasesStack.size = new Size(130, 18);
+    gesCasesStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
     
     const gesCasesSymbol = gesCasesStack.addText('📈 ');
     gesCasesSymbol.font = Font.mediumSystemFont(11);
@@ -459,16 +500,16 @@ function createHospitalBlock(stack, data) {
     // Hospital
     
     const hospitalStack = stack.addStack();
-    hospitalStack.setPadding(2, 5, 2, 2);
+    hospitalStack.setPadding(2, 5, 2, 5);
     hospitalStack.centerAlignContent();
     hospitalStack.backgroundColor = COLOR_BG;
     hospitalStack.cornerRadius = 6;
-    hospitalStack.size = new Size(130, 18);
+    hospitalStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const hospitalLabelSymbol = hospitalStack.addText('🏥 ');
     hospitalLabelSymbol.font = Font.mediumSystemFont(11);
     hospitalStack.addSpacer(1);
-    const hospitalLabel = hospitalStack.addText(formatCases(data.covidHospital) + DELIMITER + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + '%');
+    const hospitalLabel = hospitalStack.addText(formatCases(data.covidHospital) + DELIMITER + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + ' %');
     hospitalLabel.font = Font.mediumSystemFont(11);
     hospitalLabel.textColor = COLOR_FG;
     hospitalStack.addSpacer();
@@ -478,16 +519,16 @@ function createHospitalBlock(stack, data) {
     // Ventilated
     
     const ventStack = stack.addStack();
-    ventStack.setPadding(2, 5, 2, 2);
+    ventStack.setPadding(2, 5, 2, 5);
     ventStack.centerAlignContent();
     ventStack.backgroundColor = COLOR_BG;
     ventStack.cornerRadius = 6;
-    ventStack.size = new Size(130, 18);
+    ventStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const ventLabelSymbol = ventStack.addText('🫁 ');
     ventLabelSymbol.font = Font.mediumSystemFont(11);
     ventStack.addSpacer(1);
-    const ventLabel = ventStack.addText(formatCases(data.covidVentilated) + DELIMITER + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + '%');
+    const ventLabel = ventStack.addText(formatCases(data.covidVentilated) + DELIMITER + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + ' %');
     ventLabel.font = Font.mediumSystemFont(11);
     ventLabel.textColor = COLOR_FG;
     ventStack.addSpacer();
@@ -497,24 +538,44 @@ function createHospitalBlock(stack, data) {
     // Free beds
     
     const bedsStack = stack.addStack();
-    bedsStack.setPadding(2, 5, 2, 2);
+    bedsStack.setPadding(2, 5, 0, 5);
     bedsStack.centerAlignContent();
     bedsStack.backgroundColor = COLOR_BG;
     bedsStack.cornerRadius = 6;
-    bedsStack.size = new Size(130, 18);
+    bedsStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 
     const bedsSymbol = bedsStack.addText('🛌 ');
     bedsSymbol.font = Font.mediumSystemFont(11);
     bedsStack.addSpacer(1);
-    const beds = bedsStack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + '%');
+    const beds = bedsStack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + ' %');
     beds.font = Font.mediumSystemFont(11);
     beds.textColor = COLOR_FG;
     bedsStack.addSpacer();
 }
 
 function createUpdatedLabel(label, data) {
-    const updateLabel = label.addText(`${data.updated.substr(0, 10)} `);
+    let dateRKI = `${data.updated.substr(0, 10)}`;
+    
+    let dateVaccinationAPI = new Date(vaccinated.lastUpdate);
+    let dateVaccinationAPIdate = dateVaccinationAPI.getDate();
+    if (dateVaccinationAPIdate < 10) {
+      dateVaccinationAPIdate = '0' + dateVaccinationAPIdate;
+    }
+    let dateVaccinationAPImonth = dateVaccinationAPI.getMonth() + 1;
+    if (dateVaccinationAPImonth < 10) {
+      dateVaccinationAPImonth = '0' + dateVaccinationAPImonth;
+    }
+    let dateVaccinationAPIyear = dateVaccinationAPI.getFullYear();
+    let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
+
+    let updateLabelText = dateRKI;
+    if (MEDIUMWIDGET) {
+      updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
+    }
+    const updateLabel = label.addText(updateLabelText);
     updateLabel.font = Font.systemFont(9);
+    
+    label.setPadding(2, 0, 2, 0);
 }
 
 /***************************************************************************
@@ -674,7 +735,8 @@ async function getData(useFixedCoordsIndex = false) {
             areaCasesLastWeekYesterday: areaCasesLastWeekYesterday,
             areaCasesWeekBeforeWeek: areaCasesWeekBeforeWeek,
             areaIncidenceLastWeek: areaIncidenceLastWeek,
-            nameBL: BUNDESLAENDER_SHORT[attr.BL],
+            nameBL: STATES_SHORT[attr.BL],
+            stateVaccinationAPI: STATES_VACCINATION_API[attr.BL],
             shouldCache: true,
             updated: attr.last_update,
             r_factor_today: r_today,
@@ -805,6 +867,7 @@ function createGraph(row, data) {
 
 function columnGraph(data, width, height) {
     let context = new DrawContext();
+    context.respectScreenScale = true;
     context.size = new Size(width, height);
     context.opaque = false;
     let max = Math.max(...data);
@@ -864,4 +927,38 @@ function getRoundedNumber(num) {
     	}
     
 	return roundedNumber;
+}
+
+async function getNumbers() {
+    // Set up the file manager.
+    const files = FileManager.local()
+
+    // Set up cache
+    const cachePath = files.joinPath(files.cacheDirectory(), "api-cache-covid-vaccine-numbers")
+    const cacheExists = files.fileExists(cachePath)
+    const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
+
+    // Get Data
+    try {
+        // If cache exists and it's been less than 60 minutes since last request, use cached data.
+        if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
+            vaccinated = JSON.parse(files.readString(cachePath))
+        } else {
+            const request = new Request('https://rki-vaccination-data.vercel.app/api')
+            vaccinated = await request.loadJSON()
+            try {
+                files.writeString(cachePath, JSON.stringify(vaccinated))
+            } catch (e) {
+                console.log("Creating Cache failed!")
+                console.log(e)
+            }
+        }
+    } catch (e) {
+        console.error(e)
+        if (cacheExists) {
+            vaccinated = JSON.parse(files.readString(cachePath))
+        } else {
+            console.log("No fallback to cache possible. Due to missing cache.")
+        }
+    }
 }
