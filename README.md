@@ -60,8 +60,14 @@ Als Widget in Größe Small werden folgende Informationen angezeigt:
 
 Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt:
 - 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der geimpften Personen in der Region
-  - Quote der geimpften Personen in der Region im Verhältnis zur Gesamtbevölkerungszahl der Region
+  - Anzahl der geimpften Personen
+  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+- 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl der immunen Personen: Anzahl der geimpften Personen (🧬) plus die Gesamtzahl der Genesenen (🟢)
+  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+- 📈
+  - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
+  - Die Gesamtzahl der aktiven Fälle
 - 🔴
   - COVID-19-Fälle im Vergleich zum Vortag. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
   - Die Gesamtzahl der Fälle
@@ -71,15 +77,9 @@ Als Widget in Größe Medium werden auf der rechten Seite weitere Informationen 
 - 🪦
   - Neue Todesfälle am heutigen Tag
   - Die Gesamtzahl der Todesfälle
-- 📈
-  - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
-  - Die Gesamtzahl der aktiven Fälle
 - 🏥
   - Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden
-  - Der relative Anteil zu den aktuell Infizierten
-- 🫁
-  - Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden
-  - Der relative Anteil zu den aktuell Infizierten
+  - Quote im Verhältnis zur Gesamtzahl der aktiven Fälle (📈)
 - 🛌
   - Anzahl freier Intensivbetten
   - Der relative Anteil der Gesamtintensivbetten
