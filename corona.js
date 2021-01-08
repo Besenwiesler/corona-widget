@@ -344,49 +344,42 @@ function createIncidenceValueAndTrend(stack, data) {
     incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
 }
 
-function createRowBlock(row, stack, data)  {
+function createRowBlock(row, s, data)  {
+	const stack = s.addStack();
+	stack.setPadding(2, 5, 2, 5);
+	stack.centerAlignContent();
+	stack.backgroundColor = COLOR_BG;
+	stack.cornerRadius = 6;
+	stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
+  
 	 if (row === '🧬') {
-		const vaccinationStack = stack.addStack();
-		vaccinationStack.setPadding(0, 5, 2, 5);
-		vaccinationStack.centerAlignContent();
-		vaccinationStack.backgroundColor = COLOR_BG;
-		vaccinationStack.cornerRadius = 6;
-		vaccinationStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const vaccinationLabelSymbol = vaccinationStack.addText('🧬 ');
+		const vaccinationLabelSymbol = stack.addText('🧬 ');
 		vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
-		vaccinationStack.addSpacer(1);
+		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinationLabel = vaccinationStack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote + ' %');
+			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote + ' %');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
-      			const vaccinationLabel = vaccinationStack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote + ' %');
+      			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote + ' %');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else {
-			const vaccinationLabel = vaccinationStack.addText('N/A');
+			const vaccinationLabel = stack.addText('N/A');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		}
 
-		vaccinationStack.addSpacer();
+		stack.addSpacer();
 
 		return;
     }
 
 	else if (row === '💪') {
-		const immuneStack = stack.addStack();
-		immuneStack.setPadding(0, 5, 2, 5);
-		immuneStack.centerAlignContent();
-		immuneStack.backgroundColor = COLOR_BG;
-		immuneStack.cornerRadius = 6;
-		immuneStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const immuneLabelSymbol = immuneStack.addText('💪 ');
+		const immuneLabelSymbol = stack.addText('💪 ');
 		immuneLabelSymbol.font = Font.mediumSystemFont(11);
-		immuneStack.addSpacer(1);
+		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
 			const vaccinatedNumber = vaccinated.vaccinated;
 			const healthyNumber = data.areaHealthy;
@@ -394,7 +387,7 @@ function createRowBlock(row, stack, data)  {
 			const immuneNumber = vaccinatedNumber + healthyNumber;
 			const immuneQuote = (immuneNumber / totalNumber) * 100;
 
-			const immuneLabel = immuneStack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
+			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
@@ -406,33 +399,26 @@ function createRowBlock(row, stack, data)  {
 			const immuneNumber = vaccinatedNumber + healthyNumber;
 			const immuneQuote = (immuneNumber / totalNumber) * 100;
 
-			const immuneLabel = immuneStack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
+			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		} else {
-			const immuneLabel = immuneStack.addText('N/A');
+			const immuneLabel = stack.addText('N/A');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		}
 
-		immuneStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
 
     else if (row === '🔴') {
-		const casesStack = stack.addStack();
-		casesStack.setPadding(2, 5, 2, 5);
-		casesStack.centerAlignContent();
-		casesStack.backgroundColor = COLOR_BG;
-		casesStack.cornerRadius = 6;
-		casesStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const casesLabelSymbol = casesStack.addText('🔴 ');
+		const casesLabelSymbol = stack.addText('🔴 ');
 		casesLabelSymbol.font = Font.mediumSystemFont(11);
-		casesStack.addSpacer(1);
+		stack.addSpacer(1);
     
-		const casesNewLabel = casesStack.addText(formatCases(Math.abs(data.areaNewCases)));
+		const casesNewLabel = stack.addText(formatCases(Math.abs(data.areaNewCases)));
     casesNewLabel.font = Font.mediumSystemFont(11);
 		if (data.areaNewCases > 0) {
 			casesNewLabel.textColor = COLOR_INFECTED;
@@ -440,102 +426,81 @@ function createRowBlock(row, stack, data)  {
 			casesNewLabel.textColor = COLOR_HEALTHY;
 		}
     
-		const casesDelimiterLabel = casesStack.addText(DELIMITER);
+		const casesDelimiterLabel = stack.addText(DELIMITER);
 		casesDelimiterLabel.font = Font.mediumSystemFont(11);
 		casesDelimiterLabel.textColor = COLOR_FG;
     
-		const casesSumLabel = casesStack.addText(formatCases(data.areaCases));
+		const casesSumLabel = stack.addText(formatCases(data.areaCases));
 		casesSumLabel.font = Font.mediumSystemFont(11);
 		casesSumLabel.textColor = COLOR_INFECTED;
     
-		casesStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
 
     else if (row === '🟢') {
-		const healthyStack = stack.addStack();
-		healthyStack.setPadding(2, 5, 2, 5);
-		healthyStack.centerAlignContent();
-		healthyStack.backgroundColor = COLOR_BG;
-		healthyStack.cornerRadius = 6;
-		healthyStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const healthyLabelSymbol = healthyStack.addText('🟢 ');
+		const healthyLabelSymbol = stack.addText('🟢 ');
 		healthyLabelSymbol.font = Font.mediumSystemFont(11);
-		healthyStack.addSpacer(1);
+		stack.addSpacer(1);
     
-		const healthyNewLabel = healthyStack.addText(formatCases(data.areaNewHealthy));
+		const healthyNewLabel = stack.addText(formatCases(data.areaNewHealthy));
 		healthyNewLabel.font = Font.mediumSystemFont(11);
 		healthyNewLabel.textColor = COLOR_HEALTHY;
     
-		const healthyDelimiterLabel = healthyStack.addText(DELIMITER);
+		const healthyDelimiterLabel = stack.addText(DELIMITER);
 		healthyDelimiterLabel.font = Font.mediumSystemFont(11);
 		healthyDelimiterLabel.textColor = COLOR_FG;
     
-		const healthySumLabel = healthyStack.addText(formatCases(data.areaHealthy));
+		const healthySumLabel = stack.addText(formatCases(data.areaHealthy));
 		healthySumLabel.font = Font.mediumSystemFont(11);
 		healthySumLabel.textColor = COLOR_HEALTHY;
     
-		healthyStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
 
     else if (row === '🪦') {
-		const deathsStack = stack.addStack();
-		deathsStack.setPadding(2, 5, 2, 5);
-		deathsStack.centerAlignContent();
-		deathsStack.backgroundColor = COLOR_BG;
-		deathsStack.cornerRadius = 6;
-		deathsStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const deathsLabelSymbol = deathsStack.addText('🪦 ');
+		const deathsLabelSymbol = stack.addText('🪦 ');
 		deathsLabelSymbol.font = Font.mediumSystemFont(11);
-		deathsStack.addSpacer(1);
-		const deathsLabel = deathsStack.addText(formatCases(data.areaNewDeaths) + DELIMITER + formatCases(data.areaDeaths));
+		stack.addSpacer(1);
+		const deathsLabel = stack.addText(formatCases(data.areaNewDeaths) + DELIMITER + formatCases(data.areaDeaths));
 		deathsLabel.font = Font.mediumSystemFont(11);
 		deathsLabel.textColor = COLOR_FG;
 
-		deathsStack.addSpacer();
+		stack.addSpacer();
     
 		return;
 	}
     
     else if (row === '📈') {
-		const gesCasesStack = stack.addStack();
-		gesCasesStack.setPadding(2, 5, 2, 5);
-		gesCasesStack.centerAlignContent();
-		gesCasesStack.backgroundColor = COLOR_BG;
-		gesCasesStack.cornerRadius = 6;
-		gesCasesStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-    
-		const gesCasesSymbol = gesCasesStack.addText('📈 ');
+		const gesCasesSymbol = stack.addText('📈 ');
 		gesCasesSymbol.font = Font.mediumSystemFont(11);
-		gesCasesStack.addSpacer(1);
+		stack.addSpacer(1);
     
 		// number of new cases
     
 		let newActiveCases = data.areaNewCases - data.areaNewHealthy - data.areaNewDeaths;
 		if (newActiveCases > 0) {
-			const newActiveCasesLabel = gesCasesStack.addText(formatCases(newActiveCases));
+			const newActiveCasesLabel = stack.addText(formatCases(newActiveCases));
 			newActiveCasesLabel.font = Font.mediumSystemFont(11);
 			newActiveCasesLabel.textColor = COLOR_INFECTED;
 		}
 		else if (newActiveCases < 0) {
-			const newActiveCasesLabel = gesCasesStack.addText(formatCases(Math.abs(newActiveCases)));
+			const newActiveCasesLabel = stack.addText(formatCases(Math.abs(newActiveCases)));
 			newActiveCasesLabel.font = Font.mediumSystemFont(11);
 			newActiveCasesLabel.textColor = COLOR_HEALTHY;
 		}
 		else if (newActiveCases == 0) {
-			const newActiveCasesLabel = gesCasesStack.addText('±0');
+			const newActiveCasesLabel = stack.addText('±0');
 			newActiveCasesLabel.font = Font.mediumSystemFont(11);
 			newActiveCasesLabel.textColor = COLOR_FG;
 		}
     
 		// delimiter between number of new cases and total number of cases
 
-		const gesCasesDelimiter = gesCasesStack.addText(DELIMITER);
+		const gesCasesDelimiter = stack.addText(DELIMITER);
 		gesCasesDelimiter.font = Font.mediumSystemFont(11);
 		gesCasesDelimiter.textColor = COLOR_FG;
     
@@ -543,22 +508,22 @@ function createRowBlock(row, stack, data)  {
     
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 		if (activeCases > 0) {
-			const activeCasesLabel = gesCasesStack.addText(formatCases(activeCases));
+			const activeCasesLabel = stack.addText(formatCases(activeCases));
 			activeCasesLabel.font = Font.mediumSystemFont(11);
 			activeCasesLabel.textColor = COLOR_INFECTED;
 		}
 		else if (activeCases < 0) {
-			const activeCasesLabel = gesCasesStack.addText(formatCases(Math.abs(activeCases)));
+			const activeCasesLabel = stack.addText(formatCases(Math.abs(activeCases)));
 			activeCasesLabel.font = Font.mediumSystemFont(11);
 			activeCasesLabel.textColor = COLOR_HEALTHY;
 		}
 		else if (activeCases == 0) {
-			const activeCasesLabel = gesCasesStack.addText('±0');
+			const activeCasesLabel = stack.addText('±0');
 			activeCasesLabel.font = Font.mediumSystemFont(11);
 			activeCasesLabel.textColor = COLOR_FG;
 		}
    
-		gesCasesStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
@@ -566,43 +531,30 @@ function createRowBlock(row, stack, data)  {
     else if (row === '🏥') {
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
-		const hospitalStack = stack.addStack();
-		hospitalStack.setPadding(2, 5, 2, 5);
-		hospitalStack.centerAlignContent();
-		hospitalStack.backgroundColor = COLOR_BG;
-		hospitalStack.cornerRadius = 6;
-		hospitalStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const hospitalLabelSymbol = hospitalStack.addText('🏥 ');
+		const hospitalLabelSymbol = stack.addText('🏥 ');
 		hospitalLabelSymbol.font = Font.mediumSystemFont(11);
-		hospitalStack.addSpacer(1);
-		const hospitalLabel = hospitalStack.addText(formatCases(data.covidHospital) + DELIMITER + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + ' %');
+		stack.addSpacer(1);
+		const hospitalLabel = stack.addText(formatCases(data.covidHospital) + DELIMITER + formatCases((data.covidHospital / activeCases * 100).toFixed(1)) + ' %');
 		hospitalLabel.font = Font.mediumSystemFont(11);
 		hospitalLabel.textColor = COLOR_FG;
 		
-		hospitalStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
 
-    else if (row === '🫁') {
+   	else if (row === '🫁') {
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
-		const ventStack = stack.addStack();
-		ventStack.setPadding(2, 5, 2, 5);
-		ventStack.centerAlignContent();
-		ventStack.backgroundColor = COLOR_BG;
-		ventStack.cornerRadius = 6;
-		ventStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const ventLabelSymbol = ventStack.addText('🫁 ');
+		const ventLabelSymbol = stack.addText('🫁 ');
 		ventLabelSymbol.font = Font.mediumSystemFont(11);
-		ventStack.addSpacer(1);
-		const ventLabel = ventStack.addText(formatCases(data.covidVentilated) + DELIMITER + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + ' %');
+		stack.addSpacer(1);
+
+		const ventLabel = stack.addText(formatCases(data.covidVentilated) + DELIMITER + formatCases((data.covidVentilated / activeCases * 100).toFixed(1)) + ' %');
 		ventLabel.font = Font.mediumSystemFont(11);
 		ventLabel.textColor = COLOR_FG;
 
-		ventStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
@@ -610,21 +562,14 @@ function createRowBlock(row, stack, data)  {
     else if (row === '🛌') {
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
-		const bedsStack = stack.addStack();
-		bedsStack.setPadding(2, 5, 0, 5);
-		bedsStack.centerAlignContent();
-		bedsStack.backgroundColor = COLOR_BG;
-		bedsStack.cornerRadius = 6;
-		bedsStack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
-
-		const bedsSymbol = bedsStack.addText('🛌 ');
+		const bedsSymbol = stack.addText('🛌 ');
 		bedsSymbol.font = Font.mediumSystemFont(11);
-		bedsStack.addSpacer(1);
-		const beds = bedsStack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + ' %');
+		stack.addSpacer(1);
+		const beds = stack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + ' %');
 		beds.font = Font.mediumSystemFont(11);
 		beds.textColor = COLOR_FG;
 
-		bedsStack.addSpacer();
+		stack.addSpacer();
 
 		return;
 	}
