@@ -137,22 +137,15 @@ let getGermany = false;
 let getState = false;
 let fixedCoordinates = [];
 let individualName = '';
+let isStats = false;
+let isCustomRows = false;
 
 let today = new Date();
-let cacheMinutes = 60;
 let vaccinated;
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROW_1 = '🧬';
-const ROW_2 = '💪';
-const ROW_3 = '📈';
-const ROW_4 = '🔴';
-const ROW_5 = '🟢';
-const ROW_6 = '🪦';
-const ROW_7 = '🏥';
-const ROW_8 = '🛌';
-// Available options: 🧬💪🔴🟢🪦📈🏥🛌🫁
+let ROWS = ['🧬', '💪', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
 
 /***************************************************************************
  * 
@@ -171,18 +164,50 @@ if (args.widgetParameter) {
     if (parameters.length >= 3) {
         fixedCoordinates = parseLocation(args.widgetParameter);
     }
-    if (parameters.length == 4) {
-        individualName = parameters[3].slice();
+    
+    if (parameters.length >= 4) {
+        let par = parameters[3].slice();
+        if (par.length >= 1) {
+            individualName = par;
+        }
     }
-} else {}
+    
+    if (parameters.length >= 5) {
+        let par = parameters[4].slice();
+        if (par == 1) {
+            isStats = true;
+        }
+    }
+    
+    if (parameters.length >= 6) {
+        let par = parameters[5].slice();
+        let characters = par.match(/./ug);
+        if (typeof characters !== 'undefined' && characters) {
+            if (characters.length >= 1) {
+                ROWS = characters;
+                isCustomRows = true;
+            }
+        }
+    }
+}
 
 if (!config.runsInWidget) {
     MEDIUMWIDGET = true;
 }
 
 let data = await getData(0);
-await getNumbers();
+await getVaccinationData();
 if (data && typeof data !== 'undefined') {
+    if (!isCustomRows && MEDIUMWIDGET && !(getState || getGermany)) {
+      ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
+    }
+    else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
+      ROWS = ['📍', '➖', '📈', '🔴', '🟢', '🪦', '🛌', '🕰'];
+    }
+    else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
+      ROWS = ['📍', '➖', '🧬', '💪', '🔴', '🪦', '🛌', '🕰'];
+    }
+  
     const widget = await createWidget();
     widget.refreshAfterDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
     
@@ -211,31 +236,34 @@ async function createWidget() {
     if (MEDIUMWIDGET) {
         const left = stack.addStack();
         left.size = new Size(140, 140);
-        left.layoutVertically();
-
-        createLeftSide(left, data);
+        left.layoutVertically();  
+        createIncidenceBlock(left, data);
         
-        stack.addSpacer(10);
+        stack.addSpacer(15);
         
         const right = stack.addStack();
         right.size = new Size(140, 140);
         right.layoutVertically();
-        createRightSide(right, data);
+        createStatsBlock(right, data);
     } else {
         const main = stack.addStack();
-        main.size = new Size(130, 130);
+        main.size = new Size(140, 140);
         main.layoutVertically();
         main.useDefaultPadding();
-        main.centerAlignContent();
             
-        createLeftSide(main, data);
+        if (isStats) {
+          createStatsBlock(main, data)
+        } else {
+          main.centerAlignContent();
+          createIncidenceBlock(main, data);
+        }
     }
 
     return list;
 }
 
-function createLeftSide(list, data) {
-    const headerWidth = 130;
+function createIncidenceBlock(list, data) {
+    const headerWidth = 140;
     
     // Header: name of location
 
@@ -281,27 +309,16 @@ function createLeftSide(list, data) {
     createUpdatedLabel(datestack, data);
 }
 
-function createRightSide(list, data) {
+function createStatsBlock(list, data) {
     const right = list.addStack();
     right.layoutVertically();
     right.centerAlignContent();
 
-    createRowBlock(ROW_1, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_2, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_3, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_4, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_5, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_6, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_7, right, data);
-    right.addSpacer(1);
-    createRowBlock(ROW_8, right, data);
-    right.addSpacer(1);
+	ROWS.forEach(function (item, index) {
+  		createRowBlock(item, right, data);
+    	right.addSpacer(1);
+	});
+    
 }
 
 function createHeader(stack, data) {
@@ -348,25 +365,30 @@ function createRowBlock(row, s, data)  {
 	const stack = s.addStack();
 	stack.setPadding(2, 5, 2, 5);
 	stack.centerAlignContent();
-	stack.backgroundColor = COLOR_BG;
 	stack.cornerRadius = 6;
 	stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
+
+	if (MEDIUMWIDGET && row === '📍') {
+		row = '➖';
+	}
   
-	 if (row === '🧬') {
+	if (row === '🧬') {
+		stack.backgroundColor = COLOR_BG;
+
 		const vaccinationLabelSymbol = stack.addText('🧬 ');
 		vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote + ' %');
+			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote.toFixed(1) + ' %');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
-      			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote + ' %');
+      			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote.toFixed(1) + ' %');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else {
-			const vaccinationLabel = stack.addText('N/A');
+			const vaccinationLabel = stack.addText('');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		}
@@ -377,6 +399,8 @@ function createRowBlock(row, s, data)  {
     }
 
 	else if (row === '💪') {
+		stack.backgroundColor = COLOR_BG;
+
 		const immuneLabelSymbol = stack.addText('💪 ');
 		immuneLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
@@ -387,7 +411,7 @@ function createRowBlock(row, s, data)  {
 			const immuneNumber = vaccinatedNumber + healthyNumber;
 			const immuneQuote = (immuneNumber / totalNumber) * 100;
 
-			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
+			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(1) + ' %');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
@@ -399,11 +423,11 @@ function createRowBlock(row, s, data)  {
 			const immuneNumber = vaccinatedNumber + healthyNumber;
 			const immuneQuote = (immuneNumber / totalNumber) * 100;
 
-			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(2) + ' %');
+			const immuneLabel = stack.addText(getRoundedNumber(immuneNumber) + DELIMITER + immuneQuote.toFixed(1) + ' %');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		} else {
-			const immuneLabel = stack.addText('N/A');
+			const immuneLabel = stack.addText('');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
 		}
@@ -414,6 +438,8 @@ function createRowBlock(row, s, data)  {
 	}
 
     else if (row === '🔴') {
+    	stack.backgroundColor = COLOR_BG;
+    
 		const casesLabelSymbol = stack.addText('🔴 ');
 		casesLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
@@ -440,6 +466,8 @@ function createRowBlock(row, s, data)  {
 	}
 
     else if (row === '🟢') {
+    	stack.backgroundColor = COLOR_BG;
+    
 		const healthyLabelSymbol = stack.addText('🟢 ');
 		healthyLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
@@ -462,6 +490,8 @@ function createRowBlock(row, s, data)  {
 	}
 
     else if (row === '🪦') {
+    	stack.backgroundColor = COLOR_BG;
+    
 		const deathsLabelSymbol = stack.addText('🪦 ');
 		deathsLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
@@ -475,6 +505,8 @@ function createRowBlock(row, s, data)  {
 	}
     
     else if (row === '📈') {
+    	stack.backgroundColor = COLOR_BG;
+    
 		const gesCasesSymbol = stack.addText('📈 ');
 		gesCasesSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
@@ -529,6 +561,8 @@ function createRowBlock(row, s, data)  {
 	}
 
     else if (row === '🏥') {
+    	stack.backgroundColor = COLOR_BG;
+    
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
 		const hospitalLabelSymbol = stack.addText('🏥 ');
@@ -544,6 +578,8 @@ function createRowBlock(row, s, data)  {
 	}
 
    	else if (row === '🫁') {
+  		stack.backgroundColor = COLOR_BG;
+  
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
 		const ventLabelSymbol = stack.addText('🫁 ');
@@ -560,7 +596,7 @@ function createRowBlock(row, s, data)  {
 	}
 
     else if (row === '🛌') {
-		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
+    	stack.backgroundColor = COLOR_BG;
 
 		const bedsSymbol = stack.addText('🛌 ');
 		bedsSymbol.font = Font.mediumSystemFont(11);
@@ -573,6 +609,56 @@ function createRowBlock(row, s, data)  {
 
 		return;
 	}
+
+	else if (row === '➖') {
+		stack.addSpacer();
+
+		return;
+    }
+    
+    else if (row === '📍') {
+    	stack.backgroundColor = COLOR_BG;
+    
+       const symbol = stack.addText('📍 ');
+		symbol.font = Font.mediumSystemFont(11);
+		stack.addSpacer(1);
+
+		const label = stack.addText(data.areaName);
+		label.font = Font.regularSystemFont(11);
+		label.textColor = COLOR_FG;
+
+		stack.addSpacer();
+    
+		return;
+	}
+
+	else if (row === '🕰') {
+		let dateRKI = `${data.updated.substr(0, 10)}`;
+    
+		let dateVaccinationAPI = new Date(vaccinated.lastUpdate);
+		let dateVaccinationAPIdate = dateVaccinationAPI.getDate();
+		if (dateVaccinationAPIdate < 10) {
+			dateVaccinationAPIdate = '0' + dateVaccinationAPIdate;
+		}
+		let dateVaccinationAPImonth = dateVaccinationAPI.getMonth() + 1;
+		if (dateVaccinationAPImonth < 10) {
+			dateVaccinationAPImonth = '0' + dateVaccinationAPImonth;
+		}
+		let dateVaccinationAPIyear = dateVaccinationAPI.getFullYear();
+		let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
+
+		let updateLabelText = dateRKI;
+		if (ROWS.includes('🧬')) {
+			updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
+		}
+		const updateLabel = stack.addText(updateLabelText);
+		updateLabel.font = Font.systemFont(9);
+
+		stack.addSpacer();
+    
+		return;
+	}
+
 }
 
 function createUpdatedLabel(label, data) {
@@ -591,7 +677,7 @@ function createUpdatedLabel(label, data) {
     let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
 
     let updateLabelText = dateRKI;
-    if (MEDIUMWIDGET) {
+    if (MEDIUMWIDGET && ROWS.includes('🧬')) {
       updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
     }
     const updateLabel = label.addText(updateLabelText);
@@ -869,7 +955,7 @@ function getRTrend(today, yesterday) {
 
 function createGraph(row, data) {
     let graphHeight = 40;
-    let graphLength = 130;
+    let graphLength = 140;
     let graphRow = row.addStack();
     graphRow.centerAlignContent();
     graphRow.useDefaultPadding();
@@ -951,7 +1037,7 @@ function getRoundedNumber(num) {
 	return roundedNumber;
 }
 
-async function getNumbers() {
+async function getVaccinationData() {
     // Set up the file manager.
     const files = FileManager.local()
 
@@ -962,8 +1048,8 @@ async function getNumbers() {
 
     // Get Data
     try {
-        // If cache exists and it's been less than 60 minutes since last request, use cached data.
-        if (cacheExists && (today.getTime() - cacheDate.getTime()) < (cacheMinutes * 60 * 1000)) {
+        // If cache exists and it's been less than 30 minutes since last request, use cached data.
+        if (cacheExists && (today.getTime() - cacheDate.getTime()) < (30 * 60 * 1000)) {
             vaccinated = JSON.parse(files.readString(cachePath))
         } else {
             const request = new Request('https://rki-vaccination-data.vercel.app/api')
