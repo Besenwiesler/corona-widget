@@ -40,7 +40,7 @@ Beispiele:
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Land Nordrhein-Westfalen mit eigenem Namen und im Statistikmodus, in dem die Impfzahl und freie Intensivbetten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impf- und Immunitätszahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
 
 # Verfügbare Statistiken
 
