@@ -32,7 +32,7 @@ Erklärung:
 - Parameter 4: Eigene Bezeichnung für die Region
 - Parameter 5: Statistikmodus
   - `1`: Im kleinen Widget werden Statistiken angezeigt. Ist dieser Wert nicht auf `1`, wird der Inzidenzwert angezeigt und sein graphischer Verlauf.
-- Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen (siehe auch Abschnitt [Verfügbare Statistiken](#verfügbare-statistiken))
+- Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen (siehe auch Abschnitt [Statistiken](#statistiken))
 
 Beispiele:
 - lokaler Landkreis (Ortung via GPS): Keinen Parameter setzen
@@ -42,7 +42,9 @@ Beispiele:
 - Deutschland: `2`
 - Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impf- und Immunitätszahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
 
-# Verfügbare Statistiken
+# Angezeigte Informationen
+
+## Inzidenz und graphischer Verlauf
 
 Im Widget in Größe Medium links bzw. im kleinen Widget (falls nicht im Statistikmodus) werden folgende Informationen angezeigt: 
 - Inzidenz mit Trendpfeil.
@@ -62,7 +64,9 @@ Im Widget in Größe Medium links bzw. im kleinen Widget (falls nicht im Statist
 
 <img width="118" height="202" src="colorScheme.png"/>
 
-Im Widget können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
+## Statistiken
+
+Im Medium-Widget oder im Small-Widget im Statistikmodus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
 - 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
   - Anzahl der geimpften Personen
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
