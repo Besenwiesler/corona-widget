@@ -2,10 +2,9 @@
 
 COVID-19-Widget für [Scriptable](https://scriptable.app) und iOS/iPadOS.
 
-Das Widget zeigt Informationen wie Inzidenzwert und seinen Verlauf, die Anzahl der Neuinfizierten oder den R-Faktor innerhalb Deutschlands an.
-Das Widget kann per Parameter so eingestellt werden, dass die Zahlen für einen bestimmten Landkreis, ein bestimmtes Bundesland oder Deutschland angezeigt werden. Außerdem kann ein eigener Name für Landkreis oder Bundesland eingestellt werden.
+Das Widget unterstützt umfangreiche [Statistiken](#statistiken) wie die Anzahl der Neuinfizierten oder Impfzahlen. Es kann über Parameter individuell festgelegt werden, welche Informationen angezeigt werden sollen und welche nicht. Die Daten können für einen bestimmten Kreis, ein bestimmtes Bundesland oder Deutschland angezeigt werden.
 
-Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Mit der Variante von diesem Fork wurden nur geringfügige Anpassungen und kosmetischen Änderungen vorgenommen. Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern.
+Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern.
 
 <img width="357px" height="352px" src="screenshot.png"/>
 
@@ -31,7 +30,9 @@ Erklärung:
 - Parameter 3: Breitengrad
 - Parameter 4: Eigene Bezeichnung für die Region
 - Parameter 5: Statistikmodus
-  - `1`: Im kleinen Widget werden Statistiken angezeigt. Ist dieser Wert nicht auf `1`, wird der Inzidenzwert angezeigt und sein graphischer Verlauf.
+  - `0`: Im kleinen Widget wird der Inzidenzwert und sein graphischer Verlauf angezeigt.
+  - `1`: Im kleinen Widget werden Statistiken angezeigt. Für bestimmte Statistiken wird Text eingefärbt (Rot/Grün).
+  - `2`: Im kleinen Widget werden Statistiken angezeigt. Text wird nicht eingefärbt.
 - Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen (siehe auch Abschnitt [Statistiken](#statistiken))
 
 Beispiele:
@@ -40,7 +41,7 @@ Beispiele:
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impf- und Immunitätszahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, Infektionszahlen und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,2,📍➖💪🧬➖🔴➖🕰`
 
 # Angezeigte Informationen
 
@@ -67,12 +68,12 @@ Im Widget in Größe Medium links bzw. im kleinen Widget (falls nicht im Statist
 ## Statistiken
 
 Im Medium-Widget oder im Small-Widget im Statistikmodus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
-- 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl neuer Impfungen im Verhältnis zum Vortag
-  - Die Gesamtzahl der Impfungen
 - 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
   - Anzahl der immunen Personen: Gesamtzahl der Impfungen (🧬) geteilt durch 2 (Annahme dass zwei Impfungen nötig sind, siehe auch [Berliner Morgenpost](https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/)) plus die Gesamtzahl der Genesenen (🟢)
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+- 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl neuer Impfungen im Verhältnis zum Vortag
+  - Die Gesamtzahl der Impfungen
 - 📈
   - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
   - Die Gesamtzahl der aktiven Fälle
