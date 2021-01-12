@@ -40,7 +40,7 @@ Beispiele:
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impf- und Immunitätszahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impf- und Immunitätszahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,1,📍➖🧬💪➖🛌➖🕰`
 
 # Angezeigte Informationen
 
@@ -68,10 +68,10 @@ Im Widget in Größe Medium links bzw. im kleinen Widget (falls nicht im Statist
 
 Im Medium-Widget oder im Small-Widget im Statistikmodus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
 - 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der geimpften Personen
-  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+  - Anzahl neuer Impfungen im Verhältnis zum Vortag
+  - Die Gesamtzahl der Impfungen
 - 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der immunen Personen: Anzahl der geimpften Personen (🧬) plus die Gesamtzahl der Genesenen (🟢)
+  - Anzahl der immunen Personen: Gesamtzahl der Impfungen (🧬) geteilt durch 2 (Annahme dass zwei Impfungen nötig sind, siehe auch [Berliner Morgenpost](https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/)) plus die Gesamtzahl der Genesenen (🟢)
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
 - 📈
   - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
