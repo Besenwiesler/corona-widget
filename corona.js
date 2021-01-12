@@ -36,8 +36,8 @@ const showIncidenceYesterday = false;
 
 const COLOR_BG = Color.dynamic(new Color('#f8f8f8'), new Color('#141414'));
 const COLOR_FG = Color.dynamic(Color.black(), Color.white());
-const COLOR_INFECTED = new Color('#fe0000');
-const COLOR_HEALTHY = new Color('#008800');
+const COLOR_INFECTED = Color.dynamic(new Color('#fe0000'), new Color('#ff8282'));
+const COLOR_HEALTHY  = Color.dynamic(new Color('#008800'), new Color('#3ed52d'));
 
 const TIER_1_COLOR = new Color('#fbf7c9'); // light yellow
 const TIER_2_COLOR = new Color('#faee7e'); // yellow
@@ -138,7 +138,6 @@ let getState = false;
 let fixedCoordinates = [];
 let individualName = '';
 let isStats = false;
-let isStatsColors = (Device.isUsingDarkAppearance()) ? false : true;
 let isCustomRows = false;
 
 let today = new Date();
@@ -179,12 +178,6 @@ if (args.widgetParameter) {
 		if (par >= 1) {
 			isStats = true;
 		}
-		if (par == 1) {
-			isStatsColors = true;
-		}
-		if (par == 2) {
-			isStatsColors = false;
-		}
 	}
 	
 	if (parameters.length >= 6) {
@@ -213,7 +206,7 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['📍', '➖', '📈', '🔴', '🟢', '🪦', '🛌', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
-		ROWS = ['📍', '➖', '💪', '🧬', '🔴', '🪦', '🛌', '🕰'];
+		ROWS = ['📍', '➖', '💪', '🧬', '📈', '🪦', '🛌', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -459,15 +452,11 @@ function createRowBlock(row, s, data)	{
 		stack.addSpacer(1);
 	
 		const casesNewLabel = stack.addText(formatCases(Math.abs(data.areaNewCases)));
-	casesNewLabel.font = Font.mediumSystemFont(11);
-		if (isStatsColors) {
-			if (data.areaNewCases > 0) {
-				casesNewLabel.textColor = COLOR_INFECTED;
-			} else if (data.areaNewCases < 0) {
-				casesNewLabel.textColor = COLOR_HEALTHY;
-			}
-		} else {
-			casesNewLabel.textColor = COLOR_FG;
+		casesNewLabel.font = Font.mediumSystemFont(11);
+		if (data.areaNewCases > 0) {
+			casesNewLabel.textColor = COLOR_INFECTED;
+		} else if (data.areaNewCases < 0) {
+			casesNewLabel.textColor = COLOR_HEALTHY;
 		}
 	
 		const casesDelimiterLabel = stack.addText(DELIMITER);
@@ -476,7 +465,7 @@ function createRowBlock(row, s, data)	{
 	
 		const casesSumLabel = stack.addText(formatCases(data.areaCases));
 		casesSumLabel.font = Font.mediumSystemFont(11);
-		casesSumLabel.textColor = (isStatsColors) ? COLOR_INFECTED : COLOR_FG;
+		casesSumLabel.textColor = COLOR_INFECTED;
 	
 		stack.addSpacer();
 
@@ -492,7 +481,7 @@ function createRowBlock(row, s, data)	{
 	
 		const healthyNewLabel = stack.addText(formatCases(data.areaNewHealthy));
 		healthyNewLabel.font = Font.mediumSystemFont(11);
-		healthyNewLabel.textColor = (isStatsColors) ? COLOR_HEALTHY : COLOR_FG;
+		healthyNewLabel.textColor = COLOR_HEALTHY;
 	
 		const healthyDelimiterLabel = stack.addText(DELIMITER);
 		healthyDelimiterLabel.font = Font.mediumSystemFont(11);
@@ -500,7 +489,7 @@ function createRowBlock(row, s, data)	{
 	
 		const healthySumLabel = stack.addText(formatCases(data.areaHealthy));
 		healthySumLabel.font = Font.mediumSystemFont(11);
-		healthySumLabel.textColor = (isStatsColors) ? COLOR_HEALTHY : COLOR_FG;
+		healthySumLabel.textColor = COLOR_HEALTHY;
 	
 		stack.addSpacer();
 
@@ -535,12 +524,12 @@ function createRowBlock(row, s, data)	{
 		if (newActiveCases > 0) {
 			const newActiveCasesLabel = stack.addText(formatCases(newActiveCases));
 			newActiveCasesLabel.font = Font.mediumSystemFont(11);
-			newActiveCasesLabel.textColor = (isStatsColors) ? COLOR_INFECTED : COLOR_FG;
+			newActiveCasesLabel.textColor = COLOR_INFECTED;
 		}
 		else if (newActiveCases < 0) {
 			const newActiveCasesLabel = stack.addText(formatCases(Math.abs(newActiveCases)));
 			newActiveCasesLabel.font = Font.mediumSystemFont(11);
-			newActiveCasesLabel.textColor = (isStatsColors) ? COLOR_HEALTHY : COLOR_FG;
+			newActiveCasesLabel.textColor = COLOR_HEALTHY;
 		}
 		else if (newActiveCases == 0) {
 			const newActiveCasesLabel = stack.addText('±0');
@@ -560,12 +549,12 @@ function createRowBlock(row, s, data)	{
 		if (activeCases > 0) {
 			const activeCasesLabel = stack.addText(formatCases(activeCases));
 			activeCasesLabel.font = Font.mediumSystemFont(11);
-			activeCasesLabel.textColor = (isStatsColors) ? COLOR_INFECTED : COLOR_FG;
+			activeCasesLabel.textColor = COLOR_INFECTED;
 		}
 		else if (activeCases < 0) {
 			const activeCasesLabel = stack.addText(formatCases(Math.abs(activeCases)));
 			activeCasesLabel.font = Font.mediumSystemFont(11);
-			activeCasesLabel.textColor = (isStatsColors) ? COLOR_HEALTHY : COLOR_FG;
+			activeCasesLabel.textColor = COLOR_HEALTHY;
 		}
 		else if (activeCases == 0) {
 			const activeCasesLabel = stack.addText('±0');
