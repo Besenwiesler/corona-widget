@@ -87,7 +87,7 @@ const WEEK_IN_DAYS = 7;
 const EWZ_GER = 83020000;
 const INCIDENCE_DAYS = 28; // 4 Wochen
 
-const DELIMITER = ' ⚫︎ ';
+const DELIMITER = ' ◦ ';
 const FONT_SIZE_INCIDENCE = 22;
 const ROWS_HEIGHT = 16;
 const ROWS_WIDTH = 140;
@@ -145,7 +145,7 @@ let vaccinated;
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-let ROWS = ['🧬', '💪', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
+let ROWS = ['💪', '🧬', '🔴', '🟢', '📈', '🪦', '🏥', '🛌'];
 
 /***************************************************************************
  * 
@@ -205,7 +205,7 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['📍', '➖', '📈', '🔴', '🟢', '🪦', '🛌', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
-		ROWS = ['📍', '➖', '🧬', '💪', '🔴', '🪦', '🛌', '🕰'];
+		ROWS = ['📍', '➖', '💪', '🧬', '🔴', '🪦', '🛌', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -315,7 +315,7 @@ function createStatsBlock(list, data) {
 	right.centerAlignContent();
 
 	ROWS.forEach(function (item, index) {
-			createRowBlock(item, right, data);
+		createRowBlock(item, right, data);
 		right.addSpacer(1);
 	});
 	
@@ -379,12 +379,12 @@ function createRowBlock(row, s, data)	{
 		vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.vaccinated) + DELIMITER + vaccinated.quote.toFixed(1) + ' %');
+			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.difference_to_the_previous_day) + DELIMITER + getRoundedNumber(vaccinated.vaccinated));
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
-					const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].vaccinated) + DELIMITER + vaccinated.states[state].quote.toFixed(1) + ' %');
+			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].difference_to_the_previous_day) + DELIMITER + getRoundedNumber(vaccinated.states[state].vaccinated));
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else {
@@ -403,9 +403,13 @@ function createRowBlock(row, s, data)	{
 
 		const immuneLabelSymbol = stack.addText('💪 ');
 		immuneLabelSymbol.font = Font.mediumSystemFont(11);
+
 		stack.addSpacer(1);
+
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinatedNumber = vaccinated.vaccinated;
+			// assuming two shots of vaccine are necessary for immunity
+			// https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
+			const vaccinatedNumber = Math.floor(vaccinated.vaccinated / 2);
 			const healthyNumber = data.areaHealthy;
 			const totalNumber = vaccinated.total;
 			const immuneNumber = vaccinatedNumber + healthyNumber;
@@ -417,7 +421,9 @@ function createRowBlock(row, s, data)	{
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
 	
-				const vaccinatedNumber = vaccinated.states[state].vaccinated;
+			// assuming two shots of vaccine are necessary for immunity
+			// https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
+			const vaccinatedNumber = Math.floor(vaccinated.states[state].vaccinated / 2);
 			const healthyNumber = data.areaHealthy;
 			const totalNumber = vaccinated.states[state].total;
 			const immuneNumber = vaccinatedNumber + healthyNumber;
@@ -577,9 +583,9 @@ function createRowBlock(row, s, data)	{
 		return;
 	}
 
-	 	else if (row === '🫁') {
-			stack.backgroundColor = COLOR_BG;
-	
+	else if (row === '🫁') {
+		stack.backgroundColor = COLOR_BG;
+
 		let activeCases = data.areaCases - data.areaHealthy - data.areaDeaths;
 
 		const ventLabelSymbol = stack.addText('🫁 ');
@@ -619,7 +625,7 @@ function createRowBlock(row, s, data)	{
 	else if (row === '📍') {
 		stack.backgroundColor = COLOR_BG;
 	
-		 const symbol = stack.addText('📍 ');
+		const symbol = stack.addText('📍 ');
 		symbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 
