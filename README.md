@@ -26,13 +26,12 @@ Erklärung:
   - `0`: Landkreis
   - `1`: Bundesland
   - `2`: Deutschland
-- Parameter 2: Längengrad
-- Parameter 3: Breitengrad
+- Parameter 2: Breitengrad
+- Parameter 3: Längengrad
 - Parameter 4: Eigene Bezeichnung für die Region
 - Parameter 5: Statistikmodus
   - `0`: Im kleinen Widget wird der Inzidenzwert und sein graphischer Verlauf angezeigt.
-  - `1`: Im kleinen Widget werden Statistiken angezeigt. Für bestimmte Statistiken wird Text eingefärbt (Rot/Grün).
-  - `2`: Im kleinen Widget werden Statistiken angezeigt. Text wird nicht eingefärbt.
+  - `1`: Im kleinen Widget werden Statistiken angezeigt.
 - Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen (siehe auch Abschnitt [Statistiken](#statistiken))
 
 Beispiele:
@@ -41,7 +40,7 @@ Beispiele:
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, Infektionszahlen und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,2,📍➖💪🧬➖🔴➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, die Zahl aktiver Fälle und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,1,📍➖💪🧬➖📈➖🕰`
 
 # Angezeigte Informationen
 
