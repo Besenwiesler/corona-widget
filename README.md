@@ -12,7 +12,7 @@ Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/inc
 
 Source
 - Quellcode <b>corona.js</b> in [Scriptable](https://scriptable.app) als neues Script hinzufügen.
-- Widget hinzufügen und über Parameter konfigurieren (siehe Abschnitt unten).
+- Widget hinzufügen und über Parameter konfigurieren.
 
 # Konfiguration über Parameter
 
@@ -20,45 +20,46 @@ Parameter werden über eine kommaseparierte Liste übergeben wie folgt:
 
 Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 
-Erklärung:
+## Parameter
 
 - Parameter 1: Region
   - `0`: Landkreis
   - `1`: Bundesland
   - `2`: Deutschland
-- Parameter 2: Breitengrad
-- Parameter 3: Längengrad
-- Parameter 4: Eigene Bezeichnung für die Region
-- Parameter 5: Statistikmodus
-  - `0`: Im kleinen Widget wird der Inzidenzwert und sein graphischer Verlauf angezeigt.
-  - `1`: Im kleinen Widget werden Statistiken angezeigt.
-- Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen (siehe auch Abschnitt [Statistiken](#statistiken))
+- Parameter 2: Breitengrad (optionaler Parameter, wenn Deutschland als Region in Parameter 1 gesetzt wurde)
+- Parameter 3: Längengrad (optionaler Parameter, wenn Deutschland als Region in Parameter 1 gesetzt wurde)
+- Parameter 4: Eigene Bezeichnung für die Region (optionaler Parameter)
+- Parameter 5: Statistikmodus (optionaler Parameter)
+  - `0`: Im kleinen Widget wird der Inzidenzwert und sein graphischer Verlauf angezeigt
+  - `1`: Im kleinen Widget werden Statistiken angezeigt
+- Parameter 6: Kommaseparierte Liste der Emojis zu den Statistiken, die im Statistikmodus angezeigt werden sollen, siehe auch Abschnitt [Statistiken](#statistiken) (optionaler Parameter)
 
-Beispiele:
+## Beispiele
+
 - lokaler Landkreis (Ortung via GPS): Keinen Parameter setzen
 - lokales Bundesland (Ortung via GPS): `1`
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, die Zahl aktiver Fälle und Zeitpunkt des letzten Updates der Daten angezeigt werden (siehe auch Screenshot oben): `1,50.94,6.96,NRW,1,📍➖💪🧬➖📈➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, die Zahl aktiver Fälle und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖💪🧬➖📈➖🕰`
 
 # Angezeigte Informationen
 
 ## Inzidenz und graphischer Verlauf
 
-Im Widget in Größe Medium links bzw. im kleinen Widget (falls nicht im Statistikmodus) werden folgende Informationen angezeigt: 
-- Inzidenz mit Trendpfeil.
+Im Widget in Größe Medium links (bzw. ggf. im kleinen Widget falls so über Parameter konfiguriert) werden folgende Informationen angezeigt:
+- 🦠 Inzidenz mit Trendpfeil
   - Der Trendpfeil bestimmt sich durch den geschätzten R-Faktor. Der R-Faktor soll die Zahl derer angeben, die von einem Infizierten angesteckt werden. D.h. ein R-Faktor von 2 bedeutet, dass ein Infizierter im Durchschnitt 2 weitere Menschen ansteckt. Der R-Faktor wird unter der Annahme geschätzt, dass zwischen Ansteckung und dem Risiko, selbst andere anzustecken, im Durchschnitt 3,5 Tage vergehen. Außerdem werden die durchschnittlichen Neuinfizierte über 7 Tage gemittelt (um statistische Effekte am Wochenende zu eliminieren). Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
   - Beispiel zur Berechnung: Vor 7 Tagen gab es im 7-Tage Schnitt 4 Neuinfektionen. Heute gibt es im 7-Tage-Schnitt 16 Neuinfektionen. Unter der Annahme der 3,5 Tage und einem R-Faktor von 2 haben die 4 Neuinfektionen nach 3,5 Tagen also 8 Personen angesteckt, welche nach weiteren 3,5 Tagen 16 Personen angesteckt haben. Der R-Faktor berechnet sich dann wie folgt:
-    - R = Wurzel(Neuinfektionen_heute/Neuinfektionen_vor_7_Tagen) = Wurzel(16/4) = 2
+    - `R = Wurzel(Neuinfektionen_heute/Neuinfektionen_vor_7_Tagen) = Wurzel(16/4) = 2`
   - Der Trendpfeil ergibt sich also aus dem R-Faktor. Ist dieser
     - zwischen 0,95 und 1,05, so bleibt die Inzidenz in etwa konstant (→ orange eingefärbt),
     - ist er zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎ orange eingefärbt),
     - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎ orange eingefärbt),
     - über 1,1 steigt sie stark (↑ rot eingefärbt),
     - unter 0,9 sinkt sie stark (↓ grün eingefärbt).
-- Graphischer Verlauf der Inzidenz in den letzten vier Wochen.
-- Datum der letzten Aktualisierung der Daten beim RKI.
+- 📊 Graphischer Verlauf der Inzidenz in den letzten vier Wochen
+- 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
 
 "Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
 
@@ -103,5 +104,4 @@ Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
 
 Folgende Emoji sind relevant für eine individuelle Konfiguration des Statistikmodus:
 - 📍 Name der Region
-- ➖ Platzhalter für eine leere Zeile
-- 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
+- ➖ Eine transparente leere Zeile für Freiraum im Layout
