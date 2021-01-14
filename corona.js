@@ -137,7 +137,7 @@ let getGermany = false;
 let getState = false;
 let fixedCoordinates = [];
 let individualName = '';
-let isStats = false;
+let isStats = true;
 let isCustomRows = false;
 
 let today = new Date();
@@ -145,7 +145,8 @@ let vaccinated;
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '📍', '➖', '🕰'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '📍', '➖', '🕰'];
+// Standard rows for medium size widget
 let ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
 
 /***************************************************************************
@@ -175,7 +176,10 @@ if (args.widgetParameter) {
 	
 	if (parameters.length >= 5) {
 		let par = parameters[4].slice();
-		if (par >= 1) {
+		if (par == 0) {
+			isStats = false;
+		}
+		if (par == 1) {
 			isStats = true;
 		}
 	}
@@ -203,10 +207,10 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
-		ROWS = ['📍', '➖', '📈', '🔴', '🟢', '🪦', '🛌', '🕰'];
+		ROWS = ['📍', '📈', '🔴', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
-		ROWS = ['📍', '➖', '💪', '🧬', '📈', '🪦', '🛌', '🕰'];
+		ROWS = ['📍', '📈', '🔴', '🦠', '💪', '🧬', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -240,7 +244,7 @@ async function createWidget() {
 		left.layoutVertically();	
 		createIncidenceBlock(left, data);
 		
-		stack.addSpacer(15);
+		stack.addSpacer(10);
 		
 		const right = stack.addStack();
 		right.size = new Size(140, 140);
@@ -264,7 +268,6 @@ async function createWidget() {
 }
 
 function createIncidenceBlock(list, data) {
-	const headerWidth = 140;
 	
 	// Header: name of location
 
@@ -272,42 +275,29 @@ function createIncidenceBlock(list, data) {
 	headerLabel.setPadding(0, 2, 2, 2);
 	headerLabel.centerAlignContent();
 	headerLabel.layoutHorizontally();
-	headerLabel.size = new Size(headerWidth, 20);
+	headerLabel.size = new Size(ROWS_WIDTH, 20);
 
-	createHeader(headerLabel, data);
+	const areanameLabel = headerLabel.addText(data.areaName);
+	areanameLabel.font = Font.boldSystemFont(15);
+	areanameLabel.lineLimit = 1;
+
+	// Incidence
 	
 	list.addSpacer(15);
-	
-	// Incidence stack
-	
-	const inc = list.addStack();
-	inc.layoutHorizontally();
-	inc.centerAlignContent();
-	inc.size = new Size(headerWidth, 30);
-	const incStack = inc.addStack();
-	
-	// Incidence traffic light
-	
-	createIncidenceTrafficLight(incStack, data);
-	incStack.addSpacer(5);
-	
-	// Incidence plus trend
-	
-	createIncidenceValueAndTrend(incStack, data);
+
+	createRowBlock('🦠', list, data);
 	
 	// Incidence graph
 
 	list.addSpacer(15);
 	
-	createGraph(list, data);
+	createRowBlock('📊', list, data);
 	
 	// Date
 
 	list.addSpacer(1);
-	const datestack = list.addStack();
-	datestack.layoutHorizontally();
-	datestack.centerAlignContent();
-	createUpdatedLabel(datestack, data);
+
+	createRowBlock('🕰', list, data);
 }
 
 function createStatsBlock(list, data) {
@@ -322,55 +312,66 @@ function createStatsBlock(list, data) {
 	
 }
 
-function createHeader(stack, data) {
-	const areanameLabel = stack.addText(data.areaName);
-	areanameLabel.font = Font.boldSystemFont(15);
-	areanameLabel.lineLimit = 1;
-}
-
-function createIncidenceTrafficLight(stack, data) {
-	let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
-	let incidence = Math.round(areaIncidence);
-	
-	// incidence traffic light
-	
-	const incidenceTrafficLight = stack.addText('●');
-	incidenceTrafficLight.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
-	incidenceTrafficLight.textColor = getIncidenceColor(incidence);
-}
-
-function createIncidenceValueAndTrend(stack, data) {
-	let areaIncidence = (showIncidenceYesterday) ? data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
-	let incidence = Math.round(areaIncidence);
-	 
-	// incidence
-	
-	const incidenceLabel = stack.addText(incidence.toLocaleString());
-	incidenceLabel.centerAlignText();
-	incidenceLabel.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
-	
-	stack.addSpacer(3);
-
-	// trend
-	
-	let length = data.areaIncidenceLastWeek.length;
-
-	const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
-	const incidenceLabelTrend = stack.addText('' + incidenceTrend);
-	incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
-	incidenceLabelTrend.centerAlignText();
-	incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
-}
-
 function createRowBlock(row, s, data)	{
 	const stack = s.addStack();
 	stack.setPadding(2, 5, 2, 5);
 	stack.centerAlignContent();
 	stack.cornerRadius = 6;
-	stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
+	if (row === '🦠' || row === '📊') {
+		stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT*2);
+	} else {
+		stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
+	}
+	
 
 	if (MEDIUMWIDGET && row === '📍') {
 		row = '➖';
+	}
+
+	if (row === '🦠') {
+		let areaIncidence = (showIncidenceYesterday) ? 		data.areaIncidenceLastWeek[data.areaIncidenceLastWeek.length - 1] : data.incidence;
+		let incidence = Math.round(areaIncidence);
+	
+		// incidence traffic light
+	
+		const incidenceTrafficLight = stack.addText('●');
+		incidenceTrafficLight.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+		incidenceTrafficLight.textColor = getIncidenceColor(incidence);
+
+		stack.addSpacer(5);
+
+		// incidence
+	
+		const incidenceLabel = stack.addText(incidence.toLocaleString());
+		incidenceLabel.centerAlignText();
+		incidenceLabel.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+	
+		stack.addSpacer(3);
+
+		// trend
+	
+		let length = data.areaIncidenceLastWeek.length;
+
+		const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
+		const incidenceLabelTrend = stack.addText('' + incidenceTrend);
+		incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
+		incidenceLabelTrend.centerAlignText();
+		incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
+	}
+
+	if (row === '📊') {
+		stack.cornerRadius = 0;
+
+		let incidenceColumnData = [];
+
+		for (i = 0; i < data.areaIncidenceLastWeek.length; i++) {
+			incidenceColumnData.push(data.areaIncidenceLastWeek[i]);
+		}
+
+		let image = columnGraph(incidenceColumnData, ROWS_WIDTH-10, ROWS_HEIGHT*2).getImage();
+		let img = stack.addImage(image);
+		img.resizable = false;
+		img.centerAlignImage();
 	}
 	
 	if (row === '🧬') {
@@ -655,7 +656,9 @@ function createRowBlock(row, s, data)	{
 		let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
 
 		let updateLabelText = dateRKI;
-		if (ROWS.includes('🧬')) {
+		if ( ( MEDIUMWIDGET && ROWS.includes('🧬') ) ||
+		     (!MEDIUMWIDGET && isStats && ROWS.includes('🧬') )
+		   ) {
 			updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
 		}
 		const updateLabel = stack.addText(updateLabelText);
@@ -666,31 +669,6 @@ function createRowBlock(row, s, data)	{
 		return;
 	}
 
-}
-
-function createUpdatedLabel(label, data) {
-	let dateRKI = `${data.updated.substr(0, 10)}`;
-	
-	let dateVaccinationAPI = new Date(vaccinated.lastUpdate);
-	let dateVaccinationAPIdate = dateVaccinationAPI.getDate();
-	if (dateVaccinationAPIdate < 10) {
-		dateVaccinationAPIdate = '0' + dateVaccinationAPIdate;
-	}
-	let dateVaccinationAPImonth = dateVaccinationAPI.getMonth() + 1;
-	if (dateVaccinationAPImonth < 10) {
-		dateVaccinationAPImonth = '0' + dateVaccinationAPImonth;
-	}
-	let dateVaccinationAPIyear = dateVaccinationAPI.getFullYear();
-	let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
-
-	let updateLabelText = dateRKI;
-	if (MEDIUMWIDGET && ROWS.includes('🧬')) {
-		updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
-	}
-	const updateLabel = label.addText(updateLabelText);
-	updateLabel.font = Font.systemFont(9);
-	
-	label.setPadding(2, 0, 2, 0);
 }
 
 /***************************************************************************
@@ -936,7 +914,7 @@ function getTrendColor(arrow) {
 	let color = COLOR_HEALTHY;
 	
 	if (arrow === '↑') {
-		color = TIER_4_COLOR;
+		color = COLOR_INFECTED;
 	} else if (arrow === '↗') {
 		color = TIER_3_COLOR;
 	} else if (arrow === '→') {
@@ -958,26 +936,6 @@ function getRTrend(today, yesterday) {
 	}
 	
 	return trend;
-}
-
-function createGraph(row, data) {
-	let graphHeight = 40;
-	let graphLength = 140;
-	let graphRow = row.addStack();
-	graphRow.centerAlignContent();
-	graphRow.useDefaultPadding();
-	graphRow.size = new Size(graphLength, graphHeight);
-
-	let incidenceColumnData = [];
-
-	for (i = 0; i < data.areaIncidenceLastWeek.length; i++) {
-		incidenceColumnData.push(data.areaIncidenceLastWeek[i]);
-	}
-
-	let image = columnGraph(incidenceColumnData, graphLength, graphHeight).getImage();
-	let img = graphRow.addImage(image);
-	img.resizable = false;
-	img.centerAlignImage();
 }
 
 function columnGraph(data, width, height) {
