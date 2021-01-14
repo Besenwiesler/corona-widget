@@ -43,7 +43,7 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 - Deutschland: `2`
 - Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, die Zahl aktiver Fälle und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖💪🧬➖📈➖🕰`
 
-# Angezeigte Informationen
+# Statistiken
 
 ## Inzidenz und graphischer Verlauf
 
@@ -65,7 +65,7 @@ Im Widget in Größe Medium links (bzw. ggf. im kleinen Widget falls so über Pa
 
 <img width="118" height="202" src="colorScheme.png"/>
 
-## Statistiken
+## Weitere Zahlen
 
 Im Medium-Widget oder im Small-Widget im Statistikmodus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
 - 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
