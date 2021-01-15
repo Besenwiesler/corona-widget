@@ -223,7 +223,7 @@ if (data && typeof data !== 'undefined') {
 	Script.setWidget(widget);
 	Script.complete();
 } else { // no data
-	Script.refreshAfterDate = new Date(Date.now() + 1 * 1 * 60 * 1000);
+	Script.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
 }
 
 /***************************************************************************
