@@ -145,7 +145,7 @@ let vaccinated;
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '📍', '➖', '🕰'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
 // Standard rows for medium size widget
 let ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
 
@@ -197,7 +197,7 @@ if (args.widgetParameter) {
 }
 
 if (!config.runsInWidget) {
-	MEDIUMWIDGET = true;
+	isStats = true;
 }
 
 let data = await getData(0);
@@ -207,17 +207,17 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
-		ROWS = ['📍', '📈', '🔴', '🦠', '📊', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
-		ROWS = ['📍', '📈', '🔴', '🦠', '💪', '🧬', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
 	}
 	
 	const widget = await createWidget();
 	widget.refreshAfterDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
 	
 	if (!config.runsInWidget) {
-		await widget.presentMedium();
+		await widget.presentSmall();
 	}
 	
 	Script.setWidget(widget);
@@ -271,25 +271,17 @@ function createIncidenceBlock(list, data) {
 	
 	// Header: name of location
 
-	const headerLabel = list.addStack();
-	headerLabel.setPadding(0, 2, 2, 2);
-	headerLabel.centerAlignContent();
-	headerLabel.layoutHorizontally();
-	headerLabel.size = new Size(ROWS_WIDTH, 20);
-
-	const areanameLabel = headerLabel.addText(data.areaName);
-	areanameLabel.font = Font.boldSystemFont(15);
-	areanameLabel.lineLimit = 1;
+	createRowBlock('🪧', list, data);
 
 	// Incidence
 	
-	list.addSpacer(15);
+	list.addSpacer(10);
 
 	createRowBlock('🦠', list, data);
 	
 	// Incidence graph
 
-	list.addSpacer(15);
+	list.addSpacer(10);
 	
 	createRowBlock('📊', list, data);
 	
@@ -317,15 +309,19 @@ function createRowBlock(row, s, data)	{
 	stack.setPadding(2, 5, 2, 5);
 	stack.centerAlignContent();
 	stack.cornerRadius = 6;
-	if (row === '🦠' || row === '📊') {
+
+	if (row === '🦠' || row === '📊' || row === '🪧') {
 		stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT*2);
 	} else {
 		stack.size = new Size(ROWS_WIDTH, ROWS_HEIGHT);
 	}
-	
 
-	if (MEDIUMWIDGET && row === '📍') {
-		row = '➖';
+	if (row === '🪧') {
+		const areanameLabel = stack.addText(data.areaName);
+		areanameLabel.font = Font.boldSystemFont(15);
+		areanameLabel.lineLimit = 1;
+
+		return;
 	}
 
 	if (row === '🦠') {
@@ -357,6 +353,8 @@ function createRowBlock(row, s, data)	{
 		incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
 		incidenceLabelTrend.centerAlignText();
 		incidenceLabelTrend.textColor = getTrendColor(incidenceTrend);
+
+		return;
 	}
 
 	if (row === '📊') {
@@ -372,6 +370,8 @@ function createRowBlock(row, s, data)	{
 		let img = stack.addImage(image);
 		img.resizable = false;
 		img.centerAlignImage();
+
+		return;
 	}
 	
 	if (row === '🧬') {
