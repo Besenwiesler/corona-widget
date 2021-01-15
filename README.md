@@ -6,7 +6,10 @@ Das Widget unterstützt umfangreiche [Statistiken](#statistiken) wie die Anzahl 
 
 Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern.
 
-<img width="357px" height="352px" src="screenshot.png"/>
+# Screenshots
+
+<img width="357px" height="352px" src="Screenshots/ScreenshotLightMode.png"/>
+<img width="357px" height="352px" src="Screenshots/ScreenshotDarkMode.png"/>
 
 # Installation
 
@@ -47,7 +50,9 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 
 ## Inzidenz und graphischer Verlauf
 
-Im Widget in Größe Medium links (bzw. ggf. im kleinen Widget falls so über Parameter konfiguriert) werden folgende Informationen angezeigt:
+Im Widget in Größe Medium links werden folgende Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt. Auch das kleine Widget kann über die Emojis (siehe Parameter 6) so konfiguriert werden, dass die entsprechenden Informationen angezeigt werden.
+
+- 🪧 Name der Region
 - 🦠 Inzidenz mit Trendpfeil
   - Der Trendpfeil bestimmt sich durch den geschätzten R-Faktor. Der R-Faktor soll die Zahl derer angeben, die von einem Infizierten angesteckt werden. D.h. ein R-Faktor von 2 bedeutet, dass ein Infizierter im Durchschnitt 2 weitere Menschen ansteckt. Der R-Faktor wird unter der Annahme geschätzt, dass zwischen Ansteckung und dem Risiko, selbst andere anzustecken, im Durchschnitt 3,5 Tage vergehen. Außerdem werden die durchschnittlichen Neuinfizierte über 7 Tage gemittelt (um statistische Effekte am Wochenende zu eliminieren). Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
   - Beispiel zur Berechnung: Vor 7 Tagen gab es im 7-Tage Schnitt 4 Neuinfektionen. Heute gibt es im 7-Tage-Schnitt 16 Neuinfektionen. Unter der Annahme der 3,5 Tage und einem R-Faktor von 2 haben die 4 Neuinfektionen nach 3,5 Tagen also 8 Personen angesteckt, welche nach weiteren 3,5 Tagen 16 Personen angesteckt haben. Der R-Faktor berechnet sich dann wie folgt:
@@ -63,11 +68,12 @@ Im Widget in Größe Medium links (bzw. ggf. im kleinen Widget falls so über Pa
 
 "Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
 
-<img width="118" height="202" src="colorScheme.png"/>
+<img width="118" height="202" src="Screenshots/ColorScheme.png"/>
 
 ## Weitere Zahlen
 
-Im Medium-Widget oder im Small-Widget im Statistikmodus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
+Über den Inzidenzwert hinaus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
+
 - 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
   - Anzahl der immunen Personen: Gesamtzahl der Impfungen (🧬) geteilt durch 2 (Annahme dass zwei Impfungen nötig sind, siehe auch [Berliner Morgenpost](https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/)) plus die Gesamtzahl der Genesenen (🟢)
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
@@ -103,5 +109,5 @@ Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
   - Beispiel: "1234567" wird zu "1.23 M"
 
 Folgende Emoji sind relevant für eine individuelle Konfiguration des Statistikmodus:
-- 📍 Name der Region
+- 📍 Name der Region in kleinerer Darstellung als 🪧
 - ➖ Eine transparente leere Zeile für Freiraum im Layout
