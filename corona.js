@@ -4,7 +4,9 @@
 // Fork of https://github.com/tzschies/incidence with minor adjustments only
 
 // Vaccination API for RKI vaccination data: https://rki-vaccination-data.vercel.app
-// Code to display vaccination data: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+// Code to display vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+
+// Code for reproduction value from: https://github.com/rphl/corona-widget
 
 
 /**
@@ -140,14 +142,17 @@ let individualName = '';
 let isStats = true;
 let isCustomRows = false;
 
-let today = new Date();
 let vaccinated;
+const CACHE_VACCINATION_DATA = 'corona-widget-cache-vaccination-data-d316c79a';
+
+let reproductionValue;
+const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes'];
+const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79a';
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
-// Standard rows for medium size widget
-let ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
+let ROWS = ['📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖', '🕰'];
 
 /***************************************************************************
  * 
@@ -202,15 +207,26 @@ if (!config.runsInWidget) {
 
 let data = await getData(0);
 await getVaccinationData();
+await getReproductionValue();
+
 if (data && typeof data !== 'undefined') {
 	if (!isCustomRows && MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
 	}
+	else if (!isCustomRows && MEDIUMWIDGET && getState) {
+		ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
+	}
+	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
+		ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🅁', '🛌'];
+	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
-	else if (!isCustomRows && !MEDIUMWIDGET && (getState || getGermany)) {
+	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
 		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
+	}
+	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
+		ROWS = ['📈', '🪧', '🦠', '🅁', '💪', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -347,8 +363,13 @@ function createRowBlock(row, s, data)	{
 		// trend
 	
 		let length = data.areaIncidenceLastWeek.length;
-
-		const incidenceTrend = getTrendArrowFactor(parseFloat(data.r_factor_today).toFixed(3));
+		let r;
+		if (getGermany && typeof reproductionValue !== 'undefined') {
+			r = parseFloat(reproductionValue);
+		} else {
+			r = parseFloat(data.r_factor_today);
+		}
+		const incidenceTrend = getTrendArrowFactor(r);
 		const incidenceLabelTrend = stack.addText('' + incidenceTrend);
 		incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
 		incidenceLabelTrend.centerAlignText();
@@ -370,6 +391,29 @@ function createRowBlock(row, s, data)	{
 		let img = stack.addImage(image);
 		img.resizable = false;
 		img.centerAlignImage();
+
+		return;
+	}
+	
+	if (row === '🅁') {
+		stack.backgroundColor = COLOR_BG;
+
+		const symbol = stack.addText('🅁');
+		symbol.font = Font.boldSystemFont(15);
+		stack.addSpacer(6);
+		if (getGermany) {
+			if (typeof reproductionValue !== 'undefined') {
+				const label = stack.addText(reproductionValue + '');
+				label.font = Font.mediumSystemFont(11);
+				label.textColor = COLOR_FG;
+			}
+		} else {
+			const label = stack.addText(parseFloat(data.r_factor_today).toFixed(2) + '');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
+		}
+
+		stack.addSpacer();
 
 		return;
 	}
@@ -1002,12 +1046,17 @@ function getRoundedNumber(num) {
 	return roundedNumber;
 }
 
+// Vaccination API for RKI vaccination data: https://rki-vaccination-data.vercel.app
+// Code below to display vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+
 async function getVaccinationData() {
+	let today = new Date();
+
 	// Set up the file manager.
 	const files = FileManager.local()
 
 	// Set up cache
-	const cachePath = files.joinPath(files.cacheDirectory(), "api-cache-covid-vaccine-numbers")
+	const cachePath = files.joinPath(files.cacheDirectory(), CACHE_VACCINATION_DATA)
 	const cacheExists = files.fileExists(cachePath)
 	const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
 
@@ -1035,3 +1084,102 @@ async function getVaccinationData() {
 		}
 	}
 }
+
+// Code below for reproduction value from: https://github.com/rphl/corona-widget
+
+async function getReproductionValue() {
+	let today = new Date();
+
+	// Set up the file manager.
+	const files = FileManager.local()
+
+	// Set up cache
+	const cachePath = files.joinPath(files.cacheDirectory(), CACHE_REPRODUCTION_VALUE)
+	const cacheExists = files.fileExists(cachePath)
+	const cacheDate = cacheExists ? files.modificationDate(cachePath) : 0
+
+	// Get Data
+	try {
+		// If cache exists and it's been less than 30 minutes since last request, use cached data.
+		if (cacheExists && (today.getTime() - cacheDate.getTime()) < (30 * 60 * 1000)) {
+			reproductionValue = files.readString(cachePath)
+		} else {
+			const request = new Request('https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting_Zahlen_csv.csv?__blob=publicationFile')
+
+			let unparsed = await request.loadString()
+			if (unparsed && typeof unparsed !== 'undefined') {
+				reproductionValue = rValue(unparsed)
+				try {
+					files.writeString(cachePath, reproductionValue + '')
+				} catch (e) {
+					console.log("Creating Cache failed!")
+					console.log(e)
+				}
+			}
+		}
+	} catch (e) {
+		console.error(e)
+		if (cacheExists) {
+			reproductionValue = files.readString(cachePath)
+		} else {
+			console.log("No fallback to cache possible. Due to missing cache.")
+		}
+	}
+}
+
+function rCSV(rDataStr) {
+	let lines = rDataStr.split(/(?:\r\n|\n)+/).filter(function (el) { return el.length != 0 })
+	let headers = lines.splice(0, 1)[0].split(";");
+	let elements = []
+	for (let i = 0; i < lines.length; i++) {
+		let element = {};
+		let j = 0;
+		let values = lines[i].split(';')
+		element = values.reduce(function (result, field, index) {
+			result[headers[index]] = field;
+			return result;
+		}, {})
+		elements.push(element)
+	}
+	return elements
+}
+
+function rValue(data) {
+	const parsedData = rCSV(data)
+	let r = 0
+	if (parsedData.length === 0) return r
+	let availeRvalueField
+		Object.keys(parsedData[0]).forEach(key => {
+			csvRvalueFields.forEach(possibleRKey => {
+				if (key === possibleRKey) availeRvalueField = possibleRKey;
+			})
+		});
+	let firstDatefield = Object.keys(parsedData[0])[0];
+	if (availeRvalueField) {
+		parsedData.forEach(item => {
+			if (item[firstDatefield].includes('.') && typeof item[availeRvalueField] !== 'undefined' && parseFloat(item[availeRvalueField].replace(',', '.')) > 0) {
+				r = item;
+			}
+		})
+	}
+	return (r) ? parseFloat(r[availeRvalueField].replace(',', '.')) : r
+}
+
+function rCSV(rDataStr) {
+	let lines = rDataStr.split(/(?:\r\n|\n)+/).filter(function (el) { return el.length != 0 })
+	let headers = lines.splice(0, 1)[0].split(";");
+	let elements = []
+	for (let i = 0; i < lines.length; i++) {
+		let element = {};
+		let j = 0;
+		let values = lines[i].split(';')
+		element = values.reduce(function (result, field, index) {
+			result[headers[index]] = field;
+			return result;
+		}, {})
+		elements.push(element)
+	}
+	return elements
+}
+
+// Copy every line of the script!
