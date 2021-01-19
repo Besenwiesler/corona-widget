@@ -92,6 +92,9 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 🪦
   - Neue Todesfälle am heutigen Tag
   - Die Gesamtzahl der Todesfälle
+- 🅁
+  - Für Region Deutschland: Reproduktionszahl des RKI (7-Tage-R-Wert), so wie [hier]( https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting.html) veröffentlicht. Dies ist der Wert, der oft auch in der Presse aufgegriffen wird.
+  - Für Kreise/Bundesländer: geschätzter R-Faktor gemäß der [Erklärung oben](#inzidenz-und-graphischer-verlauf).
 - 🏥
   - Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden
   - Quote im Verhältnis zur Gesamtzahl der aktiven Fälle (📈)
