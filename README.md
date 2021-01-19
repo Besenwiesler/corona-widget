@@ -4,7 +4,7 @@ COVID-19-Widget für [Scriptable](https://scriptable.app) und iOS/iPadOS.
 
 Das Widget unterstützt umfangreiche [Statistiken](#statistiken) wie die Anzahl der Neuinfizierten oder Impfzahlen. Es kann über Parameter individuell festgelegt werden, welche Informationen angezeigt werden sollen und welche nicht. Die Daten können für einen bestimmten Kreis, ein bestimmtes Bundesland oder Deutschland angezeigt werden.
 
-Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern.
+Grundlage ist das [incident-Widget von tzschies](https://github.com/tzschies/incidence). Auch wird [Code von marco79cgn](https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c) genutzt, um [diese API für Impfzahlen](https://rki-vaccination-data.vercel.app) anzufragen und Ergebnisse zu speichern. Zusätzlich wird [Code von rphl](https://github.com/rphl/corona-widget) genutzt, um die Reproduktionszahl für Deutschland anzuzeigen.
 
 # Screenshots
 
@@ -54,21 +54,22 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 
 - 🪧 Name der Region
 - 🦠 Inzidenz mit Trendpfeil
-  - Der Trendpfeil bestimmt sich durch den geschätzten R-Faktor. Der R-Faktor soll die Zahl derer angeben, die von einem Infizierten angesteckt werden. D.h. ein R-Faktor von 2 bedeutet, dass ein Infizierter im Durchschnitt 2 weitere Menschen ansteckt. Der R-Faktor wird unter der Annahme geschätzt, dass zwischen Ansteckung und dem Risiko, selbst andere anzustecken, im Durchschnitt 3,5 Tage vergehen. Außerdem werden die durchschnittlichen Neuinfizierte über 7 Tage gemittelt (um statistische Effekte am Wochenende zu eliminieren). Dies ist nur eine grobe Schätzung, um die ungefähre Dynamik der Pandemie anzugeben und den Trend zu bestimmen!
-  - Beispiel zur Berechnung: Vor 7 Tagen gab es im 7-Tage Schnitt 4 Neuinfektionen. Heute gibt es im 7-Tage-Schnitt 16 Neuinfektionen. Unter der Annahme der 3,5 Tage und einem R-Faktor von 2 haben die 4 Neuinfektionen nach 3,5 Tagen also 8 Personen angesteckt, welche nach weiteren 3,5 Tagen 16 Personen angesteckt haben. Der R-Faktor berechnet sich dann wie folgt:
-    - `R = Wurzel(Neuinfektionen_heute/Neuinfektionen_vor_7_Tagen) = Wurzel(16/4) = 2`
-  - Der Trendpfeil ergibt sich also aus dem R-Faktor. Ist dieser
+  - Der Trendpfeil ergibt sich also aus der Reproduktionszahl R für die Region. Ist diese
     - zwischen 0,95 und 1,05, so bleibt die Inzidenz in etwa konstant (→ orange eingefärbt),
-    - ist er zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎ orange eingefärbt),
+    - ist sie zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎ orange eingefärbt),
     - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎ orange eingefärbt),
     - über 1,1 steigt sie stark (↑ rot eingefärbt),
     - unter 0,9 sinkt sie stark (↓ grün eingefärbt).
+  - Für Kreise und Bundesländer wird ein geschätzter Wert für die Reproduktionszahl verwendet gemäß folgender Formel:
+    - `R = Wurzel( Neuinfektionen_heute / Neuinfektionen_vor_7_Tagen ) = Wurzel( 16 / 4 ) = 2`
+  - Für Region Deutschland: Reproduktionszahl des RKI (7-Tage-R-Wert), so wie [hier]( https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting.html) veröffentlicht. Dies ist der Wert, der oft auch in der Presse aufgegriffen wird.
 - 📊 Graphischer Verlauf der Inzidenz in den letzten vier Wochen
 - 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
 
 "Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
 
 <img width="118" height="202" src="Screenshots/ColorScheme.png"/>
+
 
 ## Weitere Zahlen
 
@@ -93,8 +94,7 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
   - Neue Todesfälle am heutigen Tag
   - Die Gesamtzahl der Todesfälle
 - 🅁
-  - Für Region Deutschland: Reproduktionszahl des RKI (7-Tage-R-Wert), so wie [hier]( https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting.html) veröffentlicht. Dies ist der Wert, der oft auch in der Presse aufgegriffen wird.
-  - Für Kreise/Bundesländer: geschätzter R-Faktor gemäß der [Erklärung oben](#inzidenz-und-graphischer-verlauf).
+  - Reproduktionszahl gemäß der [Erklärung oben](#inzidenz-und-graphischer-verlauf).
 - 🏥
   - Anzahl der COVID-19-Patienten, die im Krankenhaus behandelt werden
   - Quote im Verhältnis zur Gesamtzahl der aktiven Fälle (📈)
