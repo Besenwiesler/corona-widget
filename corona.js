@@ -151,7 +151,7 @@ const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '💉', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
 let ROWS = ['📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖', '🕰'];
 
 /***************************************************************************
@@ -214,10 +214,10 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getState) {
-		ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🏥', '🛌'];
+		ROWS = ['💪', '💉', '🧬', '📈', '🔴', '🟢', '🪦', '🛌'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
-		ROWS = ['💪', '🧬', '📈', '🔴', '🟢', '🪦', '🅁', '🛌'];
+		ROWS = ['💪', '💉', '🧬', '📈', '🔴', '🟢', '🪦', '🛌'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
@@ -226,7 +226,7 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🪧', '🦠', '🅁', '💪', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -425,12 +425,19 @@ function createRowBlock(row, s, data)	{
 		vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.difference_to_the_previous_day) + DELIMITER + getRoundedNumber(vaccinated.vaccinated));
+			let totalNumber = vaccinated.vaccinated + vaccinated['2nd_vaccination'].vaccinated;
+			let diffNumber  = vaccinated.difference_to_the_previous_day + vaccinated['2nd_vaccination'].difference_to_the_previous_day;
+
+			const vaccinationLabel = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
-			const vaccinationLabel = stack.addText(getRoundedNumber(vaccinated.states[state].difference_to_the_previous_day) + DELIMITER + getRoundedNumber(vaccinated.states[state].vaccinated));
+			
+			let totalNumber = vaccinated.states[state].vaccinated + vaccinated.states[state]['2nd_vaccination'].vaccinated;
+			let diffNumber  = vaccinated.states[state].difference_to_the_previous_day + vaccinated.states[state]['2nd_vaccination'].difference_to_the_previous_day;
+
+			const vaccinationLabel = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			vaccinationLabel.font = Font.mediumSystemFont(11);
 			vaccinationLabel.textColor = COLOR_FG;
 		} else {
@@ -454,8 +461,7 @@ function createRowBlock(row, s, data)	{
 
 		if (getGermany && typeof vaccinated !== 'undefined') {
 			// assuming two shots of vaccine are necessary for immunity
-			// https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
-			const vaccinatedNumber = Math.floor(vaccinated.vaccinated / 2);
+			const vaccinatedNumber = vaccinated['2nd_vaccination'].vaccinated;
 			const healthyNumber = data.areaHealthy;
 			const totalNumber = vaccinated.total;
 			const immuneNumber = vaccinatedNumber + healthyNumber;
@@ -468,8 +474,7 @@ function createRowBlock(row, s, data)	{
 			let state = data.stateVaccinationAPI;
 	
 			// assuming two shots of vaccine are necessary for immunity
-			// https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
-			const vaccinatedNumber = Math.floor(vaccinated.states[state].vaccinated / 2);
+			const vaccinatedNumber = vaccinated.states[state]['2nd_vaccination'].vaccinated;
 			const healthyNumber = data.areaHealthy;
 			const totalNumber = vaccinated.states[state].total;
 			const immuneNumber = vaccinatedNumber + healthyNumber;
@@ -482,6 +487,45 @@ function createRowBlock(row, s, data)	{
 			const immuneLabel = stack.addText('');
 			immuneLabel.font = Font.mediumSystemFont(11);
 			immuneLabel.textColor = COLOR_FG;
+		}
+
+		stack.addSpacer();
+
+		return;
+	}
+
+else if (row === '💉') {
+		stack.backgroundColor = COLOR_BG;
+
+		const immuneLabelSymbol = stack.addText('💉 ');
+		immuneLabelSymbol.font = Font.mediumSystemFont(11);
+
+		stack.addSpacer(1);
+
+		if (getGermany && typeof vaccinated !== 'undefined') {
+			// assuming two shots of vaccine are necessary for immunity
+			const vaccinatedNumber = vaccinated['2nd_vaccination'].vaccinated;
+			const totalNumber = vaccinated.total;
+			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+
+			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
+		} else if (getState && typeof vaccinated !== 'undefined') {
+			let state = data.stateVaccinationAPI;
+	
+			// assuming two shots of vaccine are necessary for immunity
+			const vaccinatedNumber = vaccinated.states[state]['2nd_vaccination'].vaccinated;
+			const totalNumber = vaccinated.states[state].total;
+			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+
+			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
+		} else {
+			const label = stack.addText('');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
 		}
 
 		stack.addSpacer();
