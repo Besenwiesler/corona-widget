@@ -132,9 +132,6 @@ const STATES_VACCINATION_API = {
 	'Thüringen': 'Th\u00fcringen',
 };
 
-const PCT_TREND_EQUAL = 5;
-const PCT_TREND_INCREASE = 10;
-
 let getGermany = false;
 let getState = false;
 let fixedCoordinates = [];
@@ -369,7 +366,7 @@ function createRowBlock(row, s, data)	{
 		} else {
 			r = parseFloat(data.r_factor_today);
 		}
-		const incidenceTrend = getTrendArrowFactor(r);
+		const incidenceTrend = getTrendArrow(r);
 		const incidenceLabelTrend = stack.addText('' + incidenceTrend);
 		incidenceLabelTrend.font = Font.boldSystemFont(FONT_SIZE_INCIDENCE);
 		incidenceLabelTrend.centerAlignText();
@@ -961,41 +958,22 @@ async function getLocation(fixedCoordinateIndex = false) {
 	}
 }
 
-function getTrendArrow(preValue, currentValue) {
+function getTrendArrow(r) {
 	let arrow = '';
-	let pct = (parseFloat(currentValue) / parseFloat(preValue) - 1) * 100;
-	if (pct < PCT_TREND_EQUAL && pct > -PCT_TREND_EQUAL) {
-		arrow = '→';
-	} else if (pct < PCT_TREND_INCREASE) {
-		arrow = '↗';
-	} else if (pct >= PCT_TREND_INCREASE) {
+
+	if (r > 1.10) {
 		arrow = '↑';
-	} else if (pct > -PCT_TREND_INCREASE) {
+	} else if (r >= 1.05 && r <= 1.10) {
+		arrow = '↗';
+	} else if (r >= 0.95 && r <  1.05) {
+		arrow = '→';
+	} else if (r >= 0.90 && r <  0.95) {
 		arrow = '↘';
-	} else {
+	} else if (r < 0.90) {
 		arrow = '↓';
 	}
 
-	return (arrow);
-}
-
-function getTrendArrowFactor(rValue) {
-	let arrow = '';
-	let pct = (rValue - 1) * 100;
-
-	if (pct < PCT_TREND_EQUAL && pct > -PCT_TREND_EQUAL) {
-		arrow = '→';
-	} else if (pct < PCT_TREND_INCREASE && pct >= PCT_TREND_EQUAL) {
-		arrow = '↗';
-	} else if (pct >= PCT_TREND_INCREASE) {
-		arrow = '↑';
-	} else if (pct > -PCT_TREND_INCREASE) {
-		arrow = '↘';
-	} else {
-		arrow = '↓';
-	}
-
-	return (arrow);
+	return arrow;
 }
 
 function getTrendColor(arrow) {
