@@ -54,15 +54,18 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 Im Widget in Größe Medium links werden folgende Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt. Auch das kleine Widget kann über die Emojis (siehe Parameter 6) so konfiguriert werden, dass die entsprechenden Informationen angezeigt werden.
 
 - 🪧 Name der Region
-- 🦠 Inzidenz mit Trendpfeil gemäß [Reproduktionszahl](https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Reproduktionszahl) R:
-  - Ist R zwischen 0,95 und 1,05, so bleibt die Inzidenz in etwa konstant (→ orange eingefärbt),
-  - zwischen 1,05 und 1,1 steigt die Inzidenz leicht (↗︎ orange eingefärbt),
-  - zwischen 0,9 und 0,95 sinkt die Inzidenz leicht (↘︎ orange eingefärbt),
-  - über 1,1 steigt sie stark (↑ rot eingefärbt),
-  - unter 0,9 sinkt sie stark (↓ grün eingefärbt).
-  - Für Kreise und Bundesländer wird ein geschätzter Wert für die Reproduktionszahl verwendet gemäß folgender Formel:
-    - `R = Wurzel( Neuinfektionen_heute / Neuinfektionen_vor_7_Tagen )`
-  - Für Region Deutschland: Reproduktionszahl des RKI (7-Tage-R-Wert), so wie [hier]( https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting.html) veröffentlicht. Dies ist der Wert, der oft auch in der Presse aufgegriffen wird.
+- 🦠 Inzidenz mit Trendpfeil
+  - Der Trendpfeil richtet sich nach der [Reproduktionszahl](https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Reproduktionszahl) R.
+    - Datenquellen:
+      - Für Region Deutschland: Reproduktionszahl des RKI (7-Tage-R-Wert), so wie [hier]( https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting.html) veröffentlicht. Dies ist der Wert, der oft auch in der Presse aufgegriffen wird.
+      - Für Kreise und Bundesländer wird ein geschätzter Wert für die Reproduktionszahl verwendet gemäß folgender Formel:
+        - `R = Wurzel( Neuinfektionen_heute / Neuinfektionen_vor_7_Tagen )`
+    - Berechnung:
+      - ↑ ``R > 1,10`` (steigt stark)
+      - ↗︎ ``1,05 ≦ R ≦ 1,10`` (steigt leicht)
+      - → ``0,95 ≦ R < 1,05`` (in etwa konstant)
+      - ↘︎ ``0,90 ≦ R < 0,95`` (sinkt leicht)
+      - ↓ ``R < 0,90`` (sinkt stark)
 - 📊 Graphischer Verlauf der Inzidenz in den letzten vier Wochen
 - 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
 
