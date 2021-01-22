@@ -65,7 +65,6 @@ const TIER_7_LIMIT = 500;
 
 const outputFields = 'GEN,RS,EWZ,EWZ_BL,BL_ID,cases,cases_per_100k,cases7_per_100k,cases7_bl_per_100k,last_update,BL';
 const apiUrl = (location) => `https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/query?where=1%3D1&outFields=${outputFields}&geometry=${location.longitude.toFixed(3)}%2C${location.latitude.toFixed(3)}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&returnGeometry=false&outSR=4326&f=json`;
-const outputFieldsStates = 'Fallzahl,LAN_ew_GEN,cases7_bl_per_100k';
 
 const GESAMTFAELLE = 'NeuerFall+IN%281%2C0%29';
 const NEUE_FAELLE = 'NeuerFall+IN%281%2C-1%29';
@@ -85,7 +84,6 @@ const apiUrlDivi = (GetLocation) => `https://services7.arcgis.com/mOBPykOjAyBO2Z
 ***************************************************************************/
 
 const GET_DAYS = 35; // 5 Wochen
-const WEEK_IN_DAYS = 7;
 const EWZ_GER = 83020000;
 const INCIDENCE_DAYS = 28; // 4 Wochen
 
@@ -220,10 +218,10 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💪', '💉', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🪧', '🦠', '💪', '🧬', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💪', '💉', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -741,8 +739,8 @@ else if (row === '💉') {
 		let dateVaccinationAPIformatted = dateVaccinationAPIdate + '.' + dateVaccinationAPImonth + '.' + dateVaccinationAPIyear;
 
 		let updateLabelText = dateRKI;
-		if ( ( MEDIUMWIDGET && ROWS.includes('🧬') ) ||
-		     (!MEDIUMWIDGET && isStats && ROWS.includes('🧬') )
+		if ( ( MEDIUMWIDGET || (!MEDIUMWIDGET && isStats) ) &&
+		     ( ROWS.includes('🧬') || ROWS.includes('💉') || ROWS.includes('💪') )
 		   ) {
 			updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
 		}
@@ -990,18 +988,6 @@ function getTrendColor(arrow) {
 	}
 	
 	return color;
-}
-
-function getRTrend(today, yesterday) {
-	let trend = '→';
-	
-	if (today > yesterday) {
-		trend = '↗';
-	} else if (today < yesterday) {
-		trend = '↘';
-	}
-	
-	return trend;
 }
 
 function columnGraph(data, width, height) {
