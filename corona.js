@@ -118,7 +118,7 @@ const STATES_VACCINATION_API = {
 	'Brandenburg': 'Brandenburg',
 	'Bremen': 'Bremen',
 	'Hamburg': 'Hamburg',
-	'Hessen': 'Hesse ',
+	'Hessen': 'Hessen',
 	'Mecklenburg-Vorpommern': 'Mecklenburg-Vorpommern',
 	'Niedersachsen': 'Niedersachsen',
 	'Nordrhein-Westfalen': 'Nordrhein-Westfalen',
