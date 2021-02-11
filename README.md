@@ -45,7 +45,7 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, die Zahl aktiver Fälle und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,📍➖💪🧬➖📈➖🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,🪧🧬💉💪➖🛏🕰`
 
 # Statistiken
 
@@ -107,7 +107,7 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 🫁
   - Anzahl der COVID-19-Patienten, die im Krankenhaus beatmet werden
   - Quote im Verhältnis zur Gesamtzahl der aktiven Fälle (📈)
-- 🛌
+- 🛏
   - Anzahl freier Intensivbetten
   - Der relative Anteil der Gesamtintensivbetten
 
