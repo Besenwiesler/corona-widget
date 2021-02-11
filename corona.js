@@ -146,8 +146,8 @@ const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '💉', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛌', '🪧', '📍', '➖', '🕰'];
-let ROWS = ['📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖', '🕰'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💪', '🧬', '💉', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛏', '🪧', '📍', '➖', '🕰'];
+let ROWS = ['📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖', '🕰'];
 
 /***************************************************************************
  * 
@@ -206,22 +206,22 @@ await getReproductionValue();
 
 if (data && typeof data !== 'undefined') {
 	if (!isCustomRows && MEDIUMWIDGET && !(getState || getGermany)) {
-		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛌', '➖'];
+		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getState) {
-		ROWS = ['💪', '💉', '🧬', '📈', '🔴', '🟢', '🪦', '🛌'];
+		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💉', '💪'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
-		ROWS = ['💪', '💉', '🧬', '📈', '🔴', '🟢', '🪦', '🛌'];
+		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💉', '💪'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🪧', '🦠', '💪', '💉', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💉', '💪', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🪧', '🦠', '💪', '💉', '🕰'];
+		ROWS = ['📈', '🪧', '🦠', '💉', '💪', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -686,10 +686,10 @@ else if (row === '💉') {
 		return;
 	}
 
-	else if (row === '🛌') {
+	else if (row === '🛏') {
 		stack.backgroundColor = COLOR_BG;
 
-		const bedsSymbol = stack.addText('🛌 ');
+		const bedsSymbol = stack.addText('🛏 ');
 		bedsSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 		const beds = stack.addText(formatCases(data.bedsFree) + DELIMITER + formatCases((data.bedsFree / data.bedsAll * 100).toFixed(1)) + ' %');
@@ -742,7 +742,7 @@ else if (row === '💉') {
 		if ( ( MEDIUMWIDGET || (!MEDIUMWIDGET && isStats) ) &&
 		     ( ROWS.includes('🧬') || ROWS.includes('💉') || ROWS.includes('💪') )
 		   ) {
-			updateLabelText = updateLabelText + ' / 🧬 ' + dateVaccinationAPIformatted;
+			updateLabelText = updateLabelText + ', 💉 ' + dateVaccinationAPIformatted;
 		}
 		const updateLabel = stack.addText(updateLabelText);
 		updateLabel.font = Font.systemFont(9);
