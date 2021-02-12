@@ -69,7 +69,7 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 📊 Graphischer Verlauf der Inzidenz in den letzten vier Wochen
 - 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
 
-"Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt:
+"Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt. Hiervon abweichend wird jedoch ``35`` statt ``25`` als Grenzwert für orangene Farbe verwendet.
 
 <img width="118" height="202" src="Screenshots/ColorScheme.png"/>
 
