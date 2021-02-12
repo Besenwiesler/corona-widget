@@ -51,7 +51,7 @@ const TIER_7_COLOR = new Color('#d80082'); // pink
 
 const TIER_1_LIMIT = 0;
 const TIER_2_LIMIT = 5;
-const TIER_3_LIMIT = 25;
+const TIER_3_LIMIT = 35;
 const TIER_4_LIMIT = 50;
 const TIER_5_LIMIT = 100;
 const TIER_6_LIMIT = 250;
@@ -218,10 +218,10 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🪧', '🦠', '💉', '💪', '🕰'];
+		ROWS = ['💉', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🪧', '🦠', '💉', '💪', '🕰'];
+		ROWS = ['💉', '🪧', '🦠', '📊', '🕰'];
 	}
 	
 	const widget = await createWidget();
