@@ -141,7 +141,7 @@ let vaccinated;
 const CACHE_VACCINATION_DATA = 'corona-widget-cache-vaccination-data-d316c79a';
 
 let reproductionValue;
-const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes'];
+const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes', 'Schไtzer_7_Tage_R_Wert', 'Punktschไtzer des 7-Tage-R Wertes'];
 const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79a';
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
@@ -209,10 +209,10 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💉', '💪'];
+		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💪', '💉'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💉', '💪'];
+		ROWS = ['📈', '🔴', '🟢', '🪦', '🧬', '🛏', '💪', '💉'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
@@ -959,7 +959,9 @@ async function getLocation(fixedCoordinateIndex = false) {
 function getTrendArrow(r) {
 	let arrow = '';
 
-	if (r > 1.10) {
+	if (r == 'undefined' || r == 0) {
+		// nothing
+	} else if (r > 1.10) {
 		arrow = '↑';
 	} else if (r >= 1.05 && r <= 1.10) {
 		arrow = '↗';
