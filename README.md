@@ -45,7 +45,7 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Immunitäts- und Impfzahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,🪧🧬💉💪➖🛏🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impfzahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,🪧💉①②➖🛏🕰`
 
 # Statistiken
 
@@ -78,15 +78,6 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 
 Über den Inzidenzwert hinaus können die folgenden Informationen für die jeweilige Region (Kreis/Bundesland/Deutschland) angezeigt werden:
 
-- 💪 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der immunen Personen: Gesamtzahl der geimpften Personen (💉) plus die Gesamtzahl der Genesenen (🟢)
-  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
-- 💉 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der Personen, die auch die Zweitimpfung erhalten hat
-  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
-- 🧬 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl bisher verabreichter Impfstoffdosen (Erstimpfung plus Zweitimpfung) im Verhältnis zum Vortag
-  - Gesamtzahl bisher verabreichter Impfstoffdosen (Erstimpfung plus Zweitimpfung)
 - 📈
   - Aktive Fälle von heute im Sinne von Neuinfizierte minus Neugenesene minus Todesfälle. Ist diese Zahl größer Null, wird sie rot eingefärbt. Ist sie kleiner Null, wird sie grün eingefärbt.
   - Die Gesamtzahl der aktiven Fälle
@@ -110,6 +101,15 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 🛏
   - Anzahl freier Intensivbetten
   - Der relative Anteil der Gesamtintensivbetten
+- 💉 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Gesamtzahl bisher verabreichter Impfstoffdosen (Erstimpfung plus Zweitimpfung)
+  - Anzahl im Verhältnis zum Vortag
+- ① (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl der Personen, die die Erstimpfung erhalten hat
+  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+- ② (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl der Personen, die auch die Zweitimpfung erhalten hat
+  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
 
 Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
 - 4- bis 6-stellige Werte werden mit "K" gerundet und abgekürzt dargestellt.
