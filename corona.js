@@ -51,7 +51,7 @@ const TIER_7_COLOR = new Color('#d80082'); // pink
 
 const TIER_1_LIMIT = 0;
 const TIER_2_LIMIT = 5;
-const TIER_3_LIMIT = 35;
+const TIER_3_LIMIT = 25;
 const TIER_4_LIMIT = 50;
 const TIER_5_LIMIT = 100;
 const TIER_6_LIMIT = 250;
@@ -146,7 +146,7 @@ const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
-const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💉', '①', '②', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛏', '🪧', '📍', '➖', '🕰'];
+const ROWS_AVAILABLE_OPTIONS = ['🦠', '📊', '💉', '◐', '●', '🅁', '📈', '🔴', '🟢', '🪦', '🏥', '🫁', '🛏', '🪧', '📍', '➖', '🕰'];
 let ROWS = ['📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖', '🕰'];
 
 /***************************************************************************
@@ -209,19 +209,19 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '②', '①'];
+		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '●', '◐'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '②', '①'];
+		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '●', '◐'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
-		ROWS = ['①', '🪧', '🦠', '📊', '🕰'];
+		ROWS = ['◐', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['①', '🪧', '🦠', '📊', '🕰'];
+		ROWS = ['◐', '🪧', '🦠', '📊', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -446,10 +446,10 @@ function createRowBlock(row, s, data)	{
 		return;
 	}
 
-	else if (row === '①') {
+	else if (row === '◐') {
 		stack.backgroundColor = COLOR_BG;
 
-		const symbol = stack.addText('①');
+		const symbol = stack.addText('◐');
 		symbol.font = Font.boldSystemFont(15);
 		stack.addSpacer(6);
 
@@ -482,10 +482,10 @@ function createRowBlock(row, s, data)	{
 		return;
 	}
 
-	else if (row === '②') {
+	else if (row === '●') {
 		stack.backgroundColor = COLOR_BG;
 
-		const symbol = stack.addText('②');
+		const symbol = stack.addText('●');
 		symbol.font = Font.boldSystemFont(15);
 		stack.addSpacer(6);
 		
@@ -730,7 +730,7 @@ function createRowBlock(row, s, data)	{
 
 		let updateLabelText = dateRKI;
 		if ( ( MEDIUMWIDGET || (!MEDIUMWIDGET && isStats) ) &&
-		     ( ROWS.includes('💉') || ROWS.includes('①') || ROWS.includes('②') )
+		     ( ROWS.includes('💉') || ROWS.includes('◐') || ROWS.includes('●') )
 		   ) {
 			updateLabelText = updateLabelText + ', 💉 ' + dateVaccinationAPIformatted;
 		}
