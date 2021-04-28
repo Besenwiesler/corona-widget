@@ -45,7 +45,7 @@ Region, Breitengrad, Längengrad, Name, Statistikmodus, Statistiken
 - fest eingestelltes Bundesland Bayern: `1,48.96,12.38`
 - fest eingestellter Landkreis Regensburg mit eigenem Namen: `1,48.96,12.38,LK Regensburg`
 - Deutschland: `2`
-- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impfzahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,🪧💉①②➖🛏🕰`
+- Für ein kleines Widget im Statistikmodus mit dem Land Nordrhein-Westfalen (kurz NRW), in dem Impfzahlen, freie Intensivbetten und Zeitpunkt des letzten Updates der Daten angezeigt werden: `1,50.94,6.96,NRW,1,🪧💉◐●➖🛏🕰`
 
 # Statistiken
 
@@ -69,7 +69,7 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 📊 Graphischer Verlauf der Inzidenz in den letzten vier Wochen
 - 🕰 Datum des letzten Updates des RKI bzw. der Impfdaten des RKI
 
-"Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt. Hiervon abweichend wird jedoch ``35`` statt ``25`` als Grenzwert für orangene Farbe verwendet.
+"Ampel" neben dem Inzidenzwert und der graphische Verlauf sind nach folgendem Farbschema des RKI-Dashboards eingefärbt.
 
 <img width="118" height="202" src="Screenshots/ColorScheme.png"/>
 
@@ -104,11 +104,11 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
 - 💉 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
   - Gesamtzahl bisher verabreichter Impfstoffdosen (Erstimpfung plus Zweitimpfung)
   - Anzahl im Verhältnis zum Vortag
-- ① (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der Personen, die die Erstimpfung erhalten hat
+- ◐ (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl der Personen, die eine Impfserie begonnen haben
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
-- ② (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der Personen, die auch die Zweitimpfung erhalten hat
+- ● (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
+  - Anzahl vollständig geimpfter Personen
   - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
 
 Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
