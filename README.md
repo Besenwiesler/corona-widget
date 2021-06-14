@@ -102,14 +102,14 @@ Im Widget in Größe Medium links werden folgende Informationen für die jeweili
   - Anzahl freier Intensivbetten
   - Der relative Anteil der Gesamtintensivbetten
 - 💉 (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Gesamtzahl bisher verabreichter Impfstoffdosen (Erstimpfung plus Zweitimpfung)
-  - Anzahl im Verhältnis zum Vortag
+  - Anteil Personen mit mindestens einer erhaltenen Impfung im Verhältnis zur Gesamtbevölkerungszahl der Region
+  - Anteil vollständig geimpfter Personen im Verhältnis zur Gesamtbevölkerungszahl der Region
 - ◐ (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl der Personen, die eine Impfserie begonnen haben
-  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+  - Anzahl von Personen, die heute ihre erste Impfung erhalten haben
+  - Anzahl von Personen insgesamt mit erhaltener erster Impfung
 - ● (Daten nur für Bundesländer und Deutschland verfügbar, nicht für Kreise)
-  - Anzahl vollständig geimpfter Personen
-  - Quote im Verhältnis zur Gesamtbevölkerungszahl der Region
+  - Anzahl von Personen, die heute vollständig geimpft wurden
+  - Anzahl vollständig geimpfter Personen insgesamt
 
 Zahlenwerte werden wie folgt gerundet und abgekürzt dargestellt:
 - 4- bis 6-stellige Werte werden mit "K" gerundet und abgekürzt dargestellt.
