@@ -1,10 +1,10 @@
 // LICENCE: Robert Koch-Institut (RKI), dl-de/by-2-0
 
-// URL of GitHub repository: https://github.com/Besenwiesler/incidence
-// Fork of https://github.com/tzschies/incidence with minor adjustments only
+// URL of GitHub repository: https://github.com/Besenwiesler/corona-widget
+// Fork of https://github.com/tzschies/incidence
 
 // Vaccination API for RKI vaccination data: https://rki-vaccination-data.vercel.app
-// Code to display vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+// Code to cache vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
 
 // Code for reproduction value from: https://github.com/rphl/corona-widget
 
@@ -138,7 +138,7 @@ let isStats = true;
 let isCustomRows = false;
 
 let vaccinated;
-const CACHE_VACCINATION_DATA = 'corona-widget-cache-vaccination-data-d316c79a';
+const CACHE_VACCINATION_DATA = 'corona-widget-cache-vaccination-data-d316c79b';
 
 let reproductionValue;
 const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes', 'Schไtzer_7_Tage_R_Wert', 'Punktschไtzer des 7-Tage-R Wertes'];
@@ -209,19 +209,19 @@ if (data && typeof data !== 'undefined') {
 		ROWS = ['➖', '📈', '🔴', '🟢', '🪦', '🏥', '🛏', '➖'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getState) {
-		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '●', '◐'];
+		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '●', '◐', '💉'];
 	}
 	else if (!isCustomRows && MEDIUMWIDGET && getGermany) {
-		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '💉', '●', '◐'];
+		ROWS = ['📈', '🔴', '🪦', '🛏', '➖', '●', '◐', '💉'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && !(getState || getGermany)) {
 		ROWS = ['📈', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getState) {
-		ROWS = ['◐', '🪧', '🦠', '📊', '🕰'];
+		ROWS = ['💉', '🪧', '🦠', '📊', '🕰'];
 	}
 	else if (!isCustomRows && !MEDIUMWIDGET && getGermany) {
-		ROWS = ['◐', '🪧', '🦠', '📊', '🕰'];
+		ROWS = ['💉', '🪧', '🦠', '📊', '🕰'];
 	}
 	
 	const widget = await createWidget();
@@ -420,21 +420,31 @@ function createRowBlock(row, s, data)	{
 		vaccinationLabelSymbol.font = Font.mediumSystemFont(11);
 		stack.addSpacer(1);
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			let totalNumber = vaccinated.vaccinated + vaccinated['2nd_vaccination'].vaccinated;
-			let diffNumber  = vaccinated.difference_to_the_previous_day + vaccinated['2nd_vaccination'].difference_to_the_previous_day;
-
-			const vaccinationLabel = stack.addText(getRoundedNumber(totalNumber) + DELIMITER + getRoundedNumber(diffNumber));
-			vaccinationLabel.font = Font.mediumSystemFont(11);
-			vaccinationLabel.textColor = COLOR_FG;
-		} else if (getState && typeof vaccinated !== 'undefined') {
-			let state = data.stateVaccinationAPI;
+			const inhabitants = getVaccinationDataByName('Deutschland').inhabitants;
 			
-			let totalNumber = vaccinated.states[state].vaccinated + vaccinated.states[state]['2nd_vaccination'].vaccinated;
-			let diffNumber  = vaccinated.states[state].difference_to_the_previous_day + vaccinated.states[state]['2nd_vaccination'].difference_to_the_previous_day;
+			const dosesOnce = getVaccinationDataByName('Deutschland').vaccinatedAtLeastOnce.doses;
+			const quoteOnce = (dosesOnce / inhabitants) * 100;
+			
+			const dosesFully = getVaccinationDataByName('Deutschland').fullyVaccinated.doses;
+			const quoteFully = (dosesFully / inhabitants) * 100;
 
-			const vaccinationLabel = stack.addText(getRoundedNumber(totalNumber) + DELIMITER + getRoundedNumber(diffNumber));
-			vaccinationLabel.font = Font.mediumSystemFont(11);
-			vaccinationLabel.textColor = COLOR_FG;
+			const label = stack.addText(quoteFully.toFixed(1) + ' %' + DELIMITER + quoteOnce.toFixed(1) + ' %');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
+		} else if (getState && typeof vaccinated !== 'undefined') {
+			const state = data.stateVaccinationAPI;
+			
+			const inhabitants = getVaccinationDataByName(state).inhabitants;
+			
+			const dosesOnce = getVaccinationDataByName(state).vaccinatedAtLeastOnce.doses;
+			const quoteOnce = (dosesOnce / inhabitants) * 100;
+			
+			const dosesFully = getVaccinationDataByName(state).fullyVaccinated.doses;
+			const quoteFully = (dosesFully / inhabitants) * 100;
+
+			const label = stack.addText(quoteFully.toFixed(1) + ' %' + DELIMITER + quoteOnce.toFixed(1) + ' %');
+			label.font = Font.mediumSystemFont(11);
+			label.textColor = COLOR_FG;
 		} else {
 			const vaccinationLabel = stack.addText('');
 			vaccinationLabel.font = Font.mediumSystemFont(11);
@@ -454,21 +464,19 @@ function createRowBlock(row, s, data)	{
 		stack.addSpacer(6);
 
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinatedNumber = vaccinated.vaccinated;
-			const totalNumber = vaccinated.total;
-			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+			const diffNumber  = getVaccinationDataByName('Deutschland').vaccinatedAtLeastOnce.differenceToThePreviousDay;
+			const totalNumber = getVaccinationDataByName('Deutschland').vaccinatedAtLeastOnce.doses;
 
-			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			const label = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			label.font = Font.mediumSystemFont(11);
 			label.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
 	
-			const vaccinatedNumber = vaccinated.states[state].vaccinated;
-			const totalNumber = vaccinated.states[state].total;
-			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+			const diffNumber  = getVaccinationDataByName(state).vaccinatedAtLeastOnce.differenceToThePreviousDay;
+			const totalNumber = getVaccinationDataByName(state).vaccinatedAtLeastOnce.doses;
 
-			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			const label = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			label.font = Font.mediumSystemFont(11);
 			label.textColor = COLOR_FG;
 		} else {
@@ -490,21 +498,19 @@ function createRowBlock(row, s, data)	{
 		stack.addSpacer(6);
 		
 		if (getGermany && typeof vaccinated !== 'undefined') {
-			const vaccinatedNumber = vaccinated['2nd_vaccination'].vaccinated;
-			const totalNumber = vaccinated.total;
-			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+			const diffNumber  = getVaccinationDataByName('Deutschland').fullyVaccinated.differenceToThePreviousDay;
+			const totalNumber = getVaccinationDataByName('Deutschland').fullyVaccinated.doses;
 
-			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			const label = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			label.font = Font.mediumSystemFont(11);
 			label.textColor = COLOR_FG;
 		} else if (getState && typeof vaccinated !== 'undefined') {
 			let state = data.stateVaccinationAPI;
 	
-			const vaccinatedNumber = vaccinated.states[state]['2nd_vaccination'].vaccinated;
-			const totalNumber = vaccinated.states[state].total;
-			const vaccinatedQuote = (vaccinatedNumber / totalNumber) * 100;
+			const diffNumber  = getVaccinationDataByName(state).fullyVaccinated.differenceToThePreviousDay;
+			const totalNumber = getVaccinationDataByName(state).fullyVaccinated.doses;
 
-			const label = stack.addText(getRoundedNumber(vaccinatedNumber) + DELIMITER + vaccinatedQuote.toFixed(1) + ' %');
+			const label = stack.addText(getRoundedNumber(diffNumber) + DELIMITER + getRoundedNumber(totalNumber));
 			label.font = Font.mediumSystemFont(11);
 			label.textColor = COLOR_FG;
 		} else {
@@ -1047,7 +1053,7 @@ function getRoundedNumber(num) {
 }
 
 // Vaccination API for RKI vaccination data: https://rki-vaccination-data.vercel.app
-// Code below to display vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
+// Code below to cache vaccination data from: https://gist.github.com/marco79cgn/b5f291d6242a2c530e56c748f1ae7f2c
 
 async function getVaccinationData() {
 	let today = new Date();
@@ -1066,7 +1072,7 @@ async function getVaccinationData() {
 		if (cacheExists && (today.getTime() - cacheDate.getTime()) < (30 * 60 * 1000)) {
 			vaccinated = JSON.parse(files.readString(cachePath))
 		} else {
-			const request = new Request('https://rki-vaccination-data.vercel.app/api')
+			const request = new Request('https://rki-vaccination-data.vercel.app/api/v2')
 			vaccinated = await request.loadJSON()
 			try {
 				files.writeString(cachePath, JSON.stringify(vaccinated))
@@ -1081,6 +1087,14 @@ async function getVaccinationData() {
 			vaccinated = JSON.parse(files.readString(cachePath))
 		} else {
 			console.log("No fallback to cache possible. Due to missing cache.")
+		}
+	}
+}
+
+function getVaccinationDataByName(name) {
+	for (var k in vaccinated.data) {
+		if (vaccinated.data[k].name == name) {
+			return vaccinated.data[k];
 		}
 	}
 }
