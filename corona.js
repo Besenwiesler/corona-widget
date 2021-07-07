@@ -141,8 +141,8 @@ let vaccinated;
 const CACHE_VACCINATION_DATA = 'corona-widget-cache-vaccination-data-d316c79b';
 
 let reproductionValue;
-const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes', 'Schไtzer_7_Tage_R_Wert', 'Punktschไtzer des 7-Tage-R Wertes'];
-const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79a';
+const csvRvalueFields = ['Schätzer_7_Tage_R_Wert', 'Punktschätzer des 7-Tage-R Wertes', 'Schไtzer_7_Tage_R_Wert', 'Punktschไtzer des 7-Tage-R Wertes', 'PS_7_Tage_R_Wert'];
+const CACHE_REPRODUCTION_VALUE = 'corona-widget-cache-reproduction-value-d316c79b';
 
 let MEDIUMWIDGET = (config.widgetFamily === 'medium') ? true : false;
 
@@ -1118,7 +1118,7 @@ async function getReproductionValue() {
 		if (cacheExists && (today.getTime() - cacheDate.getTime()) < (30 * 60 * 1000)) {
 			reproductionValue = files.readString(cachePath)
 		} else {
-			const request = new Request('https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Projekte_RKI/Nowcasting_Zahlen_csv.csv?__blob=publicationFile')
+			const request = new Request('https://raw.githubusercontent.com/robert-koch-institut/SARS-CoV-2-Nowcasting_und_-R-Schaetzung/main/Nowcast_R_aktuell.csv')
 
 			let unparsed = await request.loadString()
 			if (unparsed && typeof unparsed !== 'undefined') {
@@ -1143,19 +1143,18 @@ async function getReproductionValue() {
 
 function rCSV(rDataStr) {
 	let lines = rDataStr.split(/(?:\r\n|\n)+/).filter(function (el) { return el.length != 0 })
-	let headers = lines.splice(0, 1)[0].split(";");
-	let elements = []
-	for (let i = 0; i < lines.length; i++) {
+	let headers = lines[0].split(",");
+	let elements = [];
+	for (let i = 1; i < lines.length; i++) {
 		let element = {};
-		let j = 0;
-		let values = lines[i].split(';')
+		let values = lines[i].split(',');
 		element = values.reduce(function (result, field, index) {
 			result[headers[index]] = field;
 			return result;
 		}, {})
-		elements.push(element)
+		elements.push(element);
 	}
-	return elements
+	return elements;
 }
 
 function rValue(data) {
@@ -1171,29 +1170,12 @@ function rValue(data) {
 	let firstDatefield = Object.keys(parsedData[0])[0];
 	if (availeRvalueField) {
 		parsedData.forEach(item => {
-			if (item[firstDatefield].includes('.') && typeof item[availeRvalueField] !== 'undefined' && parseFloat(item[availeRvalueField].replace(',', '.')) > 0) {
+			if (item[firstDatefield].includes('-') && typeof item[availeRvalueField] !== 'undefined' && parseFloat(item[availeRvalueField].replace(',', '.')) > 0) {
 				r = item;
 			}
 		})
 	}
 	return (r) ? parseFloat(r[availeRvalueField].replace(',', '.')) : r
-}
-
-function rCSV(rDataStr) {
-	let lines = rDataStr.split(/(?:\r\n|\n)+/).filter(function (el) { return el.length != 0 })
-	let headers = lines.splice(0, 1)[0].split(";");
-	let elements = []
-	for (let i = 0; i < lines.length; i++) {
-		let element = {};
-		let j = 0;
-		let values = lines[i].split(';')
-		element = values.reduce(function (result, field, index) {
-			result[headers[index]] = field;
-			return result;
-		}, {})
-		elements.push(element)
-	}
-	return elements
 }
 
 // Copy every line of the script!
